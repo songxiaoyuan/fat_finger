@@ -1,16 +1,16 @@
 # depslib dependency file v1.0
-1490842261 source:/home/sxy/Desktop/fat_finger/fatFinger/main.cpp
+1490854742 source:/home/sxy/Desktop/fat_finger/fatFinger/main.cpp
 	"main.h"
 	<iostream>
 
-1490840558 source:/home/sxy/Desktop/fat_finger/fatFinger/api/md/mdspi.cpp
+1490857785 source:/home/sxy/Desktop/fat_finger/fatFinger/api/md/mdspi.cpp
 	"mdspi.h"
 	<iostream>
 	<vector>
 	<stdlib.h>
 	<string.h>
 
-1490838939 /home/sxy/Desktop/fat_finger/fatFinger/api/md/mdspi.h
+1490854270 /home/sxy/Desktop/fat_finger/fatFinger/api/md/mdspi.h
 	"api/trade/public/ThostFtdcMdApi.h"
 
 1465180016 /home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/ThostFtdcMdApi.h
@@ -26,7 +26,7 @@
 
 1490840139 /home/sxy/Desktop/fat_finger/fatFinger/api/test/test.h
 
-1490840801 source:/home/sxy/Desktop/fat_finger/fatFinger/api/trader/traderspi.cpp
+1490854781 source:/home/sxy/Desktop/fat_finger/fatFinger/api/trader/traderspi.cpp
 	"api/trade/public/ThostFtdcTraderApi.h"
 	"api/trader/traderspi.h"
 	<iostream>
@@ -41,7 +41,7 @@
 1490839095 /home/sxy/Desktop/fat_finger/fatFinger/api/trader/traderspi.h
 	"api/trade/public/ThostFtdcTraderApi.h"
 
-1490842468 /home/sxy/Desktop/fat_finger/fatFinger/main.h
+1490861601 /home/sxy/Desktop/fat_finger/fatFinger/main.h
 	"config.h"
 	"api/trade/public/ThostFtdcMdApi.h"
 	"api/trade/public/ThostFtdcTraderApi.h"
@@ -50,5 +50,7 @@
 	<iostream>
 	<stdlib.h>
 
-1490841745 /home/sxy/Desktop/fat_finger/fatFinger/config.h
+1490860642 /home/sxy/Desktop/fat_finger/fatFinger/config.h
+	"api/trade/public/ThostFtdcMdApi.h"
+	"api/trade/public/ThostFtdcTraderApi.h"
 

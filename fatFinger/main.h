@@ -11,6 +11,11 @@
 #include <stdlib.h>
 using namespace std;
 
+extern TThostFtdcBrokerIDType   appId;
+extern TThostFtdcUserIDType	 userId;
+extern TThostFtdcPasswordType   passwd;
+extern char *ppInstrumentID[];
+extern int NumOfInstrumentID;
 
 void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
   if(print){
@@ -78,31 +83,30 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
 void ShowMdCommand(CtpMdSpi* p, bool print=false){
   if(print){
     cerr<<"-----------------------------------------------"<<endl;
-    cerr<<" [1] ReqUserLogin              -- 登录"<<endl;
-    cerr<<" [2] SubscribeMarketData       -- 行情订阅"<<endl;
+    cerr<<" [1] ReqUserLogin              -- 登录并订阅行情"<<endl;
     cerr<<" [0] Exit                      -- 退出"<<endl;
     cerr<<"----------------------------------------------"<<endl;
   }
-  TThostFtdcBrokerIDType appId;
-	TThostFtdcUserIDType	 userId;
-	TThostFtdcPasswordType passwd;
-  char instIdList[100];
+  /*
+  cout<<"登录"<<endl;
+  p->ReqUserLogin(appId,userId,passwd);
+  cout<<"合约"<<endl;
+   p->SubscribeMarketData(ppInstrumentID,NumOfInstrumentID);
+   */
 
-  int cmd;  cin>>cmd;
+  int cmd;
+  cin>>cmd;
   switch(cmd){
     case 1: {
-              cerr<<" 应用单元 > ";cin>>appId;
-              cerr<<" 投资者代码 > ";cin>>userId;
-              cerr<<" 交易密码 > ";cin>>passwd;
-              p->ReqUserLogin(appId,userId,passwd); break;
-            }
-    case 2: {
-              cerr<<" 合约 > "; cin>>instIdList;
-              p->SubscribeMarketData(instIdList); break;
+              cout<<"登录"<<endl;
+              p->ReqUserLogin(appId,userId,passwd);
+              cout<<"合约"<<endl;
+              p->SubscribeMarketData(ppInstrumentID,NumOfInstrumentID); break;
             }
     case 0: exit(0);
   }
-  ShowMdCommand(p);
+  return;
+  //ShowMdCommand(p);
 }
 
 #endif // MAIN_H_INCLUDED

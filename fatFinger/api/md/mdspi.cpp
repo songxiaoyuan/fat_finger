@@ -15,19 +15,19 @@ void CtpMdSpi::OnRspError(CThostFtdcRspInfoField *pRspInfo,
 
 void CtpMdSpi::OnFrontDisconnected(int nReason)
 {
-  cerr<<" ÏìÓ¦ | Á¬½ÓÖÐ¶Ï..."
+  cerr<<" å“åº” | è¿žæŽ¥ä¸­æ–­..."
     << " reason=" << nReason << endl;
 }
 
 void CtpMdSpi::OnHeartBeatWarning(int nTimeLapse)
 {
-  cerr<<" ÏìÓ¦ | ÐÄÌø³¬Ê±¾¯¸æ..."
+  cerr<<" å“åº” | å¿ƒè·³è¶…æ—¶è­¦å‘Š..."
     << " TimerLapse = " << nTimeLapse << endl;
 }
 
 void CtpMdSpi::OnFrontConnected()
 {
-	cerr<<" Á¬½Ó½»Ò×Ç°ÖÃ...³É¹¦"<<endl;
+	cerr<<" è¿žæŽ¥äº¤æ˜“å‰ç½®...æˆåŠŸ"<<endl;
 }
 
 void CtpMdSpi::ReqUserLogin(TThostFtdcBrokerIDType	appId,
@@ -39,7 +39,7 @@ void CtpMdSpi::ReqUserLogin(TThostFtdcBrokerIDType	appId,
 	strcpy(req.UserID, userId);
 	strcpy(req.Password, passwd);
 	int ret = pUserApi->ReqUserLogin(&req, ++requestId);
-  cerr<<" ÇëÇó | ·¢ËÍµÇÂ¼..."<<((ret == 0) ? "³É¹¦" :"Ê§°Ü") << endl;
+  cerr<<" è¯·æ±‚ | å‘é€ç™»å½•..."<<((ret == 0) ? "æˆåŠŸ" :"å¤±è´¥") << endl;
 }
 
 void CtpMdSpi::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin,
@@ -47,59 +47,50 @@ void CtpMdSpi::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin,
 {
 	if (!IsErrorRspInfo(pRspInfo) && pRspUserLogin)
 	{
-    cerr<<" ÏìÓ¦ | µÇÂ¼³É¹¦...µ±Ç°½»Ò×ÈÕ:"
+    cerr<<" å“åº” | ç™»å½•æˆåŠŸ...å½“å‰äº¤æ˜“æ—¥:"
       <<pRspUserLogin->TradingDay<<endl;
 	}
 }
 
-void CtpMdSpi::SubscribeMarketData(char* instIdList)
+void CtpMdSpi::SubscribeMarketData(char *instIdList[],int len)
 {
-  vector<char*> list;
-  char *token = strtok(instIdList, ",");
-  while( token != NULL ){
-    list.push_back(token);
-    token = strtok(NULL, ",");
-  }
-  unsigned int len = list.size();
-  char** pInstId = new char* [len];
-  for(unsigned int i=0; i<len;i++)  pInstId[i]=list[i];
-  int ret=pUserApi->SubscribeMarketData(pInstId, len);
-  cerr<<" ÇëÇó | ·¢ËÍÐÐÇé¶©ÔÄ... "<<((ret == 0) ? "³É¹¦" : "Ê§°Ü")<< endl;
+  int ret=pUserApi->SubscribeMarketData(instIdList, len);
+  cerr<<" è¯·æ±‚ | å‘é€è¡Œæƒ…è®¢é˜…... "<<((ret == 0) ? "æˆåŠŸ" : "å¤±è´¥")<< endl;
 }
 
 void CtpMdSpi::OnRspSubMarketData(
          CThostFtdcSpecificInstrumentField *pSpecificInstrument,
          CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-	cerr<<" ÏìÓ¦ |  ÐÐÇé¶©ÔÄ...³É¹¦"<<endl;
+	cerr<<" å“åº” |  è¡Œæƒ…è®¢é˜…...æˆåŠŸ"<<endl;
 }
 
 void CtpMdSpi::OnRspUnSubMarketData(
              CThostFtdcSpecificInstrumentField *pSpecificInstrument,
              CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-	cerr<<" ÏìÓ¦ |  ÐÐÇéÈ¡Ïû¶©ÔÄ...³É¹¦"<<endl;
+	cerr<<" å“åº” |  è¡Œæƒ…å–æ¶ˆè®¢é˜…...æˆåŠŸ"<<endl;
 }
 
 void CtpMdSpi::OnRtnDepthMarketData(
              CThostFtdcDepthMarketDataField *pDepthMarketData)
 {
-  cerr<<" ÐÐÇé | ºÏÔ¼:"<<pDepthMarketData->InstrumentID
-    <<" ÏÖ¼Û:"<<pDepthMarketData->LastPrice
-    <<" ×î¸ß¼Û:" << pDepthMarketData->HighestPrice
-    <<" ×îµÍ¼Û:" << pDepthMarketData->LowestPrice
-    <<" ÂôÒ»¼Û:" << pDepthMarketData->AskPrice1
-    <<" ÂôÒ»Á¿:" << pDepthMarketData->AskVolume1
-    <<" ÂòÒ»¼Û:" << pDepthMarketData->BidPrice1
-    <<" ÂòÒ»Á¿:" << pDepthMarketData->BidVolume1
-    <<" ³Ö²ÖÁ¿:"<< pDepthMarketData->OpenInterest <<endl;
+  cerr<<" è¡Œæƒ… | åˆçº¦:"<<pDepthMarketData->InstrumentID
+    <<" çŽ°ä»·:"<<pDepthMarketData->LastPrice
+    <<" æœ€é«˜ä»·:" << pDepthMarketData->HighestPrice
+    <<" æœ€ä½Žä»·:" << pDepthMarketData->LowestPrice
+    <<" å–ä¸€ä»·:" << pDepthMarketData->AskPrice1
+    <<" å–ä¸€é‡:" << pDepthMarketData->AskVolume1
+    <<" ä¹°ä¸€ä»·:" << pDepthMarketData->BidPrice1
+    <<" ä¹°ä¸€é‡:" << pDepthMarketData->BidVolume1
+    <<" æŒä»“é‡:"<< pDepthMarketData->OpenInterest <<endl;
 }
 
 bool CtpMdSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)
 {
   bool ret = ((pRspInfo) && (pRspInfo->ErrorID != 0));
   if (ret){
-    cerr<<" ÏìÓ¦ | "<<pRspInfo->ErrorMsg<<endl;
+    cerr<<" å“åº” | "<<pRspInfo->ErrorMsg<<endl;
   }
   return ret;
 }

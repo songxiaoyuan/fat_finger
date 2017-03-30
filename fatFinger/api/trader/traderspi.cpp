@@ -8,8 +8,8 @@
 
 using namespace std;
 
-TThostFtdcBrokerIDType appId;		// 应用单元
-TThostFtdcUserIDType userId;		// 投资者代码
+extern TThostFtdcBrokerIDType appId;		// 应用单元
+extern TThostFtdcUserIDType userId;		// 投资者代码
 
 
 extern int requestId;

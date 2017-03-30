@@ -43,7 +43,7 @@ public:
 public:
 	void ReqUserLogin(TThostFtdcBrokerIDType	appId,
 	        TThostFtdcUserIDType	userId,	TThostFtdcPasswordType	passwd);
-	void SubscribeMarketData(char* instIdList);
+	void SubscribeMarketData(char* instIdList[],int len);
 	bool IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo);
 private:
   CThostFtdcMdApi* pUserApi;

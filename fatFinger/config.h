@@ -16,7 +16,7 @@ TThostFtdcUserIDType	 userId = "068674";
 TThostFtdcPasswordType   passwd = "19930208";
 
 //订阅的行情列表
-char *ppInstrumentID[] = {"ag1708", "au1704"};
-int NumOfInstrumentID = 2;
+char *ppInstrumentID[] = {"au1706"};
+int NumOfInstrumentID = 1;
 
 #endif // CONFIG_H_INCLUDED

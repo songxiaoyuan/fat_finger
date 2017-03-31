@@ -13,10 +13,12 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="../fatFinger" />
+					<Add directory="api/test" />
 				</Compiler>
 				<Linker>
-					<Add library="api/trade/public/thostmduserapi.so" />
-					<Add library="api/trade/public/thosttraderapi.so" />
+					<Add library="/home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/thostmduserapi.so" />
+					<Add library="/home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/thosttraderapi.so" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -26,6 +28,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="api/test" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -44,7 +47,9 @@
 		<Unit filename="api/trade/public/ThostFtdcUserApiStruct.h" />
 		<Unit filename="api/trader/traderspi.cpp" />
 		<Unit filename="api/trader/traderspi.h" />
+		<Unit filename="config.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="main.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

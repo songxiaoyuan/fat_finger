@@ -14,9 +14,10 @@ void test_md(void)
   ShowMdCommand(pUserSpi,true);
   pUserApi->Join();      //等待接口线程退出
   //pUserApi->Release(); //接口对象释放
+  cout<<"extis!!!"<<endl;
 }
 
-void test_order(void)
+void test_trader(void)
 {
   //初始化UserApi
   CThostFtdcTraderApi* pUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi();
@@ -29,6 +30,7 @@ void test_order(void)
   pUserApi->Init();
   ShowTraderCommand(pUserSpi,true);
   pUserApi->Join();
+  cout<<"the trader isrequestId exitst"<<endl;
   //pUserApi->Release();
 }
 int main(int argc, const char* argv[]){
@@ -37,6 +39,7 @@ int main(int argc, const char* argv[]){
   //if(argc < 2)  cerr<<"格式: 命令 参数, 输入有误."<<endl;
   //else if(strcmp(argv[1],"--md")==0)    test_md();
   //else if(strcmp(argv[1],"--order")==0) test_order();
-  test_md();
+  //test_md();
+  test_trader();
   return 0;
 }

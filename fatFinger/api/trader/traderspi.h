@@ -52,6 +52,8 @@ public:
 	///用户登录请求
 	void ReqUserLogin(TThostFtdcBrokerIDType	appId,
 	        TThostFtdcUserIDType	userId,	TThostFtdcPasswordType	passwd);
+    ///请求查询投资者结算结果
+	void ReqQrySettlementInfo();
 	///投资者结算结果确认
 	void ReqSettlementInfoConfirm();
 	///请求查询合约
@@ -61,7 +63,7 @@ public:
 	///请求查询投资者持仓
 	void ReqQryInvestorPosition(TThostFtdcInstrumentIDType instId);
 	///报单录入请求
-  void ReqOrderInsert(TThostFtdcInstrumentIDType instId,
+   void ReqOrderInsert(TThostFtdcInstrumentIDType instId,
         TThostFtdcDirectionType dir, TThostFtdcCombOffsetFlagType kpp,
         TThostFtdcPriceType price,   TThostFtdcVolumeType vol);
 	///报单操作请求

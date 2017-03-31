@@ -2,6 +2,7 @@
 #define MAIN_H_INCLUDED
 
 #include "config.h"
+#include "basicFun/basicFun.h"
 #include "api/trade/public/ThostFtdcMdApi.h"
 #include "api/trade/public/ThostFtdcTraderApi.h"
 #include "api/md/mdspi.h"
@@ -32,9 +33,7 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
     cerr<<" [0] Exit                      -- 退出"<<endl;
     cerr<<"----------------------------------------------"<<endl;
   }
-  TThostFtdcBrokerIDType	    appId;
-  TThostFtdcUserIDType	        userId;
-  TThostFtdcPasswordType	    passwd;
+
   TThostFtdcInstrumentIDType    instId;
   TThostFtdcDirectionType       dir;
   TThostFtdcCombOffsetFlagType  kpp;
@@ -45,19 +44,25 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
   int cmd;  cin>>cmd;
   switch(cmd){
     case 1: {
-              cerr<<" 应用单元 > ";cin>>appId;
-              cerr<<" 投资者代码 > ";cin>>userId;
-              cerr<<" 交易密码 > ";cin>>passwd;
+              cerr<<" 应用单元 > ";
+              cerr<<" 投资者代码 > ";
+              cerr<<" 交易密码 > ";
               p->ReqUserLogin(appId,userId,passwd); break;
+              //p->ReqQrySettlementInfo();
+              //p->ReqSettlementInfoConfirm(); break;
             }
-    case 2: p->ReqSettlementInfoConfirm(); break;
+    case 2: {
+                p->ReqQrySettlementInfo();
+                p->ReqSettlementInfoConfirm(); break;
+            }
     case 3: {
-              cerr<<" 合约 > "; cin>>instId;
+              cerr<<" 合约 > ";
               p->ReqQryInstrument(instId); break;
             }
     case 4: p->ReqQryTradingAccount(); break;
     case 5: {
-              cerr<<" 合约 > "; cin>>instId;
+              cerr<<" 合约 > ";
+              //cin>>instId;
               p->ReqQryInvestorPosition(instId); break;
             }
     case 6: {
@@ -105,7 +110,7 @@ void ShowMdCommand(CtpMdSpi* p, bool print=false){
             }
     case 0: exit(0);
   }
-  return;
+  cout<<"out"<<endl;
   //ShowMdCommand(p);
 }
 

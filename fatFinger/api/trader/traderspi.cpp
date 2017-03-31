@@ -1,5 +1,6 @@
 #include "api/trade/public/ThostFtdcTraderApi.h"
 #include "api/trader/traderspi.h"
+#include "basicFun/basicFun.h"
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
@@ -8,15 +9,15 @@
 
 using namespace std;
 
-extern TThostFtdcBrokerIDType appId;		// ”¶”√µ•‘™
-extern TThostFtdcUserIDType userId;		// Õ∂◊ ’ﬂ¥˙¬Î
+extern TThostFtdcBrokerIDType appId;		// Â∫îÁî®ÂçïÂÖÉ
+extern TThostFtdcUserIDType userId;		// ÊäïËµÑËÄÖ‰ª£Á†Å
 
 
 extern int requestId;
 
-// ª·ª∞≤Œ ˝
-int	 frontId;	//«∞÷√±‡∫≈
-int	 sessionId;	//ª·ª∞±‡∫≈
+// ‰ºöËØùÂèÇÊï∞
+int	 frontId;	//ÂâçÁΩÆÁºñÂè∑
+int	 sessionId;	//‰ºöËØùÁºñÂè∑
 char orderRef[13];
 
 vector<CThostFtdcOrderField*> orderList;
@@ -25,11 +26,12 @@ vector<CThostFtdcTradeField*> tradeList;
 char MapDirection(char src, bool toOrig);
 char MapOffset(char src, bool toOrig);
 
-
+TThostFtdcDateType confirmDate="20170331";
+TThostFtdcTimeType confirmTime ="10:44";
 
 void CtpTraderSpi::OnFrontConnected()
 {
-	cerr<<" ¡¨Ω”Ωª“◊«∞÷√...≥…π¶"<<endl;
+	cerr<<" ËøûÊé•‰∫§ÊòìÂâçÁΩÆ...ÊàêÂäü"<<endl;
 }
 
 void CtpTraderSpi::ReqUserLogin(TThostFtdcBrokerIDType	vAppId,
@@ -42,21 +44,31 @@ void CtpTraderSpi::ReqUserLogin(TThostFtdcBrokerIDType	vAppId,
 	strcpy(req.UserID, vUserId);  strcpy(userId, vUserId);
 	strcpy(req.Password, vPasswd);
 	int ret = pUserApi->ReqUserLogin(&req, ++requestId);
-  cerr<<" «Î«Û | ∑¢ÀÕµ«¬º..."<<((ret == 0) ? "≥…π¶" :" ß∞‹") << endl;
+  cerr<<" ËØ∑Ê±Ç | ÂèëÈÄÅÁôªÂΩï..."<<((ret == 0) ? "ÊàêÂäü" :"Â§±Ë¥•") << endl;
 }
 
 void CtpTraderSpi::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin,
 		CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
 	if ( !IsErrorRspInfo(pRspInfo) && pRspUserLogin ) {
-    // ±£¥Êª·ª∞≤Œ ˝
+    // ‰øùÂ≠ò‰ºöËØùÂèÇÊï∞
 		frontId = pRspUserLogin->FrontID;
 		sessionId = pRspUserLogin->SessionID;
 		int nextOrderRef = atoi(pRspUserLogin->MaxOrderRef);
 		sprintf(orderRef, "%d", ++nextOrderRef);
-    cerr<<" œÏ”¶ | µ«¬º≥…π¶...µ±«∞Ωª“◊»’:"
+    cerr<<" ÂìçÂ∫î | ÁôªÂΩïÊàêÂäü...ÂΩìÂâç‰∫§ÊòìÊó•:"
       <<pRspUserLogin->TradingDay<<endl;
   }
+}
+
+void CtpTraderSpi::ReqQrySettlementInfo()
+{
+	CThostFtdcQrySettlementInfoField req;
+	memset(&req, 0, sizeof(req));
+	strcpy(req.BrokerID, appId);
+	strcpy(req.InvestorID, userId);
+	int ret = pUserApi->ReqQrySettlementInfo(&req, ++requestId);
+	cerr<<" ËØ∑Ê±Ç | ÂèëÈÄÅÁªìÁÆóÁªìÊûúÊü•ËØ¢..."<<((ret == 0)?"ÊàêÂäü":"Â§±Ë¥•")<<endl;
 }
 
 void CtpTraderSpi::ReqSettlementInfoConfirm()
@@ -66,37 +78,42 @@ void CtpTraderSpi::ReqSettlementInfoConfirm()
 	strcpy(req.BrokerID, appId);
 	strcpy(req.InvestorID, userId);
 	int ret = pUserApi->ReqSettlementInfoConfirm(&req, ++requestId);
-	cerr<<" «Î«Û | ∑¢ÀÕΩ·À„µ•»∑»œ..."<<((ret == 0)?"≥…π¶":" ß∞‹")<<endl;
+	cerr<<" ËØ∑Ê±Ç | ÂèëÈÄÅÁªìÁÆóÂçïÁ°ÆËÆ§..."<<((ret == 0)?"ÊàêÂäü":"Â§±Ë¥•")<<endl;
 }
 
 void CtpTraderSpi::OnRspSettlementInfoConfirm(
         CThostFtdcSettlementInfoConfirmField  *pSettlementInfoConfirm,
         CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
+    cout<<"the function is called"<<endl;
 	if( !IsErrorRspInfo(pRspInfo) && pSettlementInfoConfirm){
-    cerr<<" œÏ”¶ | Ω·À„µ•..."<<pSettlementInfoConfirm->InvestorID
+    cerr<<" ÂìçÂ∫î | ÁªìÁÆóÂçï..."<<pSettlementInfoConfirm->InvestorID
       <<"...<"<<pSettlementInfoConfirm->ConfirmDate
-      <<" "<<pSettlementInfoConfirm->ConfirmTime<<">...»∑»œ"<<endl;
-  }
+      <<" "<<pSettlementInfoConfirm->ConfirmTime<<">...Á°ÆËÆ§"<<endl;
+    }
+    else{
+       cout<<"the selletment info confirm is wrong"<<endl;
+    }
 }
 
 void CtpTraderSpi::ReqQryInstrument(TThostFtdcInstrumentIDType instId)
 {
 	CThostFtdcQryInstrumentField req;
 	memset(&req, 0, sizeof(req));
-  strcpy(req.InstrumentID, instId);//Œ™ø’±Ì æ≤È—ØÀ˘”–∫œ‘º
+   strcpy(req.InstrumentID, instId);//‰∏∫Á©∫Ë°®Á§∫Êü•ËØ¢ÊâÄÊúâÂêàÁ∫¶
 	int ret = pUserApi->ReqQryInstrument(&req, ++requestId);
-	cerr<<" «Î«Û | ∑¢ÀÕ∫œ‘º≤È—Ø..."<<((ret == 0)?"≥…π¶":" ß∞‹")<<endl;
+	cerr<<" ËØ∑Ê±Ç | ÂèëÈÄÅÂêàÁ∫¶Êü•ËØ¢..."<<((ret == 0)?"ÊàêÂäü":"Â§±Ë¥•")<<endl;
 }
 
 void CtpTraderSpi::OnRspQryInstrument(CThostFtdcInstrumentField *pInstrument,
          CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
+    cout<<"this OnRspQryInstrument is called"<<endl;
 	if ( !IsErrorRspInfo(pRspInfo) &&  pInstrument){
-    cerr<<" œÏ”¶ | ∫œ‘º:"<<pInstrument->InstrumentID
-      <<" Ωª∏Ó‘¬:"<<pInstrument->DeliveryMonth
-      <<" ∂‡Õ∑±£÷§Ω¬ :"<<pInstrument->LongMarginRatio
-      <<" ø’Õ∑±£÷§Ω¬ :"<<pInstrument->ShortMarginRatio<<endl;
+    cerr<<" ÂìçÂ∫î | ÂêàÁ∫¶:"<<pInstrument->InstrumentID
+      <<" ‰∫§Ââ≤Êúà:"<<pInstrument->DeliveryMonth
+      <<" Â§öÂ§¥‰øùËØÅÈáëÁéá:"<<pInstrument->LongMarginRatio
+      <<" Á©∫Â§¥‰øùËØÅÈáëÁéá:"<<pInstrument->ShortMarginRatio<<endl;
   }
 }
 
@@ -107,7 +124,7 @@ void CtpTraderSpi::ReqQryTradingAccount()
 	strcpy(req.BrokerID, appId);
 	strcpy(req.InvestorID, userId);
 	int ret = pUserApi->ReqQryTradingAccount(&req, ++requestId);
-	cerr<<" «Î«Û | ∑¢ÀÕ◊ Ω≤È—Ø..."<<((ret == 0)?"≥…π¶":" ß∞‹")<<endl;
+	cerr<<" ËØ∑Ê±Ç | ÂèëÈÄÅËµÑÈáëÊü•ËØ¢..."<<((ret == 0)?"ÊàêÂäü":"Â§±Ë¥•")<<endl;
 
 }
 
@@ -115,15 +132,16 @@ void CtpTraderSpi::OnRspQryTradingAccount(
     CThostFtdcTradingAccountField *pTradingAccount,
    CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
+    cout<<"this OnRspQryTradingAccount is called"<<endl;
 	if (!IsErrorRspInfo(pRspInfo) &&  pTradingAccount){
-    cerr<<" œÏ”¶ | »®“Ê:"<<pTradingAccount->Balance
-      <<" ø…”√:"<<pTradingAccount->Available
-      <<" ±£÷§Ω:"<<pTradingAccount->CurrMargin
-      <<" ∆Ω≤÷”Øø˜:"<<pTradingAccount->CloseProfit
-      <<" ≥÷≤÷”Øø˜"<<pTradingAccount->PositionProfit
-      <<"  ÷–¯∑—:"<<pTradingAccount->Commission
-      <<" ∂≥Ω·±£÷§Ω:"<<pTradingAccount->FrozenMargin
-      //<<" ∂≥Ω· ÷–¯∑—:"<<pTradingAccount->FrozenCommission
+    cerr<<" ÂìçÂ∫î | ÊùÉÁõä:"<<pTradingAccount->Balance
+      <<" ÂèØÁî®:"<<pTradingAccount->Available
+      <<" ‰øùËØÅÈáë:"<<pTradingAccount->CurrMargin
+      <<" Âπ≥‰ªìÁõà‰∫è:"<<pTradingAccount->CloseProfit
+      <<" ÊåÅ‰ªìÁõà‰∫è"<<pTradingAccount->PositionProfit
+      <<" ÊâãÁª≠Ë¥π:"<<pTradingAccount->Commission
+      <<" ÂÜªÁªì‰øùËØÅÈáë:"<<pTradingAccount->FrozenMargin
+      //<<" ÂÜªÁªìÊâãÁª≠Ë¥π:"<<pTradingAccount->FrozenCommission
       << endl;
   }
 }
@@ -136,21 +154,22 @@ void CtpTraderSpi::ReqQryInvestorPosition(TThostFtdcInstrumentIDType instId)
 	strcpy(req.InvestorID, userId);
 	strcpy(req.InstrumentID, instId);
 	int ret = pUserApi->ReqQryInvestorPosition(&req, ++requestId);
-	cerr<<" «Î«Û | ∑¢ÀÕ≥÷≤÷≤È—Ø..."<<((ret == 0)?"≥…π¶":" ß∞‹")<<endl;
+	cerr<<" ËØ∑Ê±Ç | ÂèëÈÄÅÊåÅ‰ªìÊü•ËØ¢..."<<((ret == 0)?"ÊàêÂäü":"Â§±Ë¥•")<<endl;
 }
 
 void CtpTraderSpi::OnRspQryInvestorPosition(
     CThostFtdcInvestorPositionField *pInvestorPosition,
     CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
+   cout<<"this OnRspQryInvestorPosition is called"<<endl;
   if( !IsErrorRspInfo(pRspInfo) &&  pInvestorPosition ){
-    cerr<<" œÏ”¶ | ∫œ‘º:"<<pInvestorPosition->InstrumentID
-      <<" ∑ΩœÚ:"<<MapDirection(pInvestorPosition->PosiDirection-2,false)
-      <<" ◊‹≥÷≤÷:"<<pInvestorPosition->Position
-      <<" ◊Ú≤÷:"<<pInvestorPosition->YdPosition
-      <<" ΩÒ≤÷:"<<pInvestorPosition->TodayPosition
-      <<" ≥÷≤÷”Øø˜:"<<pInvestorPosition->PositionProfit
-      <<" ±£÷§Ω:"<<pInvestorPosition->UseMargin<<endl;
+    cerr<<" ÂìçÂ∫î | ÂêàÁ∫¶:"<<pInvestorPosition->InstrumentID
+      <<" ÊñπÂêë:"<<MapDirection(pInvestorPosition->PosiDirection-2,false)
+      <<" ÊÄªÊåÅ‰ªì:"<<pInvestorPosition->Position
+      <<" Êò®‰ªì:"<<pInvestorPosition->YdPosition
+      <<" ‰ªä‰ªì:"<<pInvestorPosition->TodayPosition
+      <<" ÊåÅ‰ªìÁõà‰∫è:"<<pInvestorPosition->PositionProfit
+      <<" ‰øùËØÅÈáë:"<<pInvestorPosition->UseMargin<<endl;
   }
 }
 
@@ -160,43 +179,44 @@ void CtpTraderSpi::ReqOrderInsert(TThostFtdcInstrumentIDType instId,
 {
 	CThostFtdcInputOrderField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, appId);  //”¶”√µ•‘™¥˙¬Î
-	strcpy(req.InvestorID, userId); //Õ∂◊ ’ﬂ¥˙¬Î
-	strcpy(req.InstrumentID, instId); //∫œ‘º¥˙¬Î
-	strcpy(req.OrderRef, orderRef);  //±®µ•“˝”√
+	strcpy(req.BrokerID, appId);  //Â∫îÁî®ÂçïÂÖÉ‰ª£Á†Å
+	strcpy(req.InvestorID, userId); //ÊäïËµÑËÄÖ‰ª£Á†Å
+	strcpy(req.InstrumentID, instId); //ÂêàÁ∫¶‰ª£Á†Å
+	strcpy(req.OrderRef, orderRef);  //Êä•ÂçïÂºïÁî®
   int nextOrderRef = atoi(orderRef);
   sprintf(orderRef, "%d", ++nextOrderRef);
 
-  req.LimitPrice = price;	//º€∏Ò
+  req.LimitPrice = price;	//‰ª∑Ê†º
   if(0==req.LimitPrice){
-	  req.OrderPriceType = THOST_FTDC_OPT_AnyPrice;//º€∏Ò¿‡–Õ= –º€
-	  req.TimeCondition = THOST_FTDC_TC_IOC;//”––ß∆⁄¿‡–Õ:¡¢º¥ÕÍ≥…£¨∑Ò‘Ú≥∑œ˙
+	  req.OrderPriceType = THOST_FTDC_OPT_AnyPrice;//‰ª∑Ê†ºÁ±ªÂûã=Â∏Ç‰ª∑
+	  req.TimeCondition = THOST_FTDC_TC_IOC;//ÊúâÊïàÊúüÁ±ªÂûã:Á´ãÂç≥ÂÆåÊàêÔºåÂê¶ÂàôÊí§ÈîÄ
   }else{
-    req.OrderPriceType = THOST_FTDC_OPT_LimitPrice;//º€∏Ò¿‡–Õ=œﬁº€
-    req.TimeCondition = THOST_FTDC_TC_GFD;  //”––ß∆⁄¿‡–Õ:µ±»’”––ß
+    req.OrderPriceType = THOST_FTDC_OPT_LimitPrice;//‰ª∑Ê†ºÁ±ªÂûã=Èôê‰ª∑
+    req.TimeCondition = THOST_FTDC_TC_GFD;  //ÊúâÊïàÊúüÁ±ªÂûã:ÂΩìÊó•ÊúâÊïà
   }
-  req.Direction = MapDirection(dir,true);  //¬Ú¬Ù∑ΩœÚ
-	req.CombOffsetFlag[0] = MapOffset(kpp[0],true); //◊È∫œø™∆Ω±Í÷æ:ø™≤÷
-	req.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;	  //◊È∫œÕ∂ª˙Ã◊±£±Í÷æ
-	req.VolumeTotalOriginal = vol;	/// ˝¡ø
-	req.VolumeCondition = THOST_FTDC_VC_AV; //≥…Ωª¡ø¿‡–Õ:»Œ∫Œ ˝¡ø
-	req.MinVolume = 1;	//◊Ó–°≥…Ωª¡ø:1
-	req.ContingentCondition = THOST_FTDC_CC_Immediately;  //¥•∑¢Ãıº˛:¡¢º¥
+  req.Direction = MapDirection(dir,true);  //‰π∞ÂçñÊñπÂêë
+	req.CombOffsetFlag[0] = MapOffset(kpp[0],true); //ÁªÑÂêàÂºÄÂπ≥Ê†áÂøó:ÂºÄ‰ªì
+	req.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;	  //ÁªÑÂêàÊäïÊú∫Â•ó‰øùÊ†áÂøó
+	req.VolumeTotalOriginal = vol;	///Êï∞Èáè
+	req.VolumeCondition = THOST_FTDC_VC_AV; //Êàê‰∫§ÈáèÁ±ªÂûã:‰ªª‰ΩïÊï∞Èáè
+	req.MinVolume = 1;	//ÊúÄÂ∞èÊàê‰∫§Èáè:1
+	req.ContingentCondition = THOST_FTDC_CC_Immediately;  //Ëß¶ÂèëÊù°‰ª∂:Á´ãÂç≥
 
-  //TThostFtdcPriceType	StopPrice;  //÷πÀº€
-	req.ForceCloseReason = THOST_FTDC_FCC_NotForceClose;	//«ø∆Ω‘≠“Ú:∑««ø∆Ω
-	req.IsAutoSuspend = 0;  //◊‘∂Øπ“∆±Í÷æ:∑Ò
-	req.UserForceClose = 0;   //”√ªß«ø∆¿±Í÷æ:∑Ò
+  //TThostFtdcPriceType	StopPrice;  //Ê≠¢Êçü‰ª∑
+	req.ForceCloseReason = THOST_FTDC_FCC_NotForceClose;	//Âº∫Âπ≥ÂéüÂõ†:ÈùûÂº∫Âπ≥
+	req.IsAutoSuspend = 0;  //Ëá™Âä®ÊåÇËµ∑Ê†áÂøó:Âê¶
+	req.UserForceClose = 0;   //Áî®Êà∑Âº∫ËØÑÊ†áÂøó:Âê¶
 
 	int ret = pUserApi->ReqOrderInsert(&req, ++requestId);
-	cerr<<" «Î«Û | ∑¢ÀÕ±®µ•..."<<((ret == 0)?"≥…π¶":" ß∞‹")<< endl;
+	cerr<<" ËØ∑Ê±Ç | ÂèëÈÄÅÊä•Âçï..."<<((ret == 0)?"ÊàêÂäü":"Â§±Ë¥•")<< endl;
 }
 
 void CtpTraderSpi::OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder,
           CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
+   cout<<"this OnRspOrderInsert is called"<<endl;
   if( !IsErrorRspInfo(pRspInfo) && pInputOrder ){
-    cerr<<"œÏ”¶ | ±®µ•Ã·Ωª≥…π¶...±®µ•“˝”√:"<<pInputOrder->OrderRef<<endl;
+    cerr<<"ÂìçÂ∫î | Êä•ÂçïÊèê‰∫§ÊàêÂäü...Êä•ÂçïÂºïÁî®:"<<pInputOrder->OrderRef<<endl;
   }
 }
 
@@ -206,35 +226,36 @@ void CtpTraderSpi::ReqOrderAction(TThostFtdcSequenceNoType orderSeq)
   for(i=0;i<orderList.size();i++){
     if(orderList[i]->BrokerOrderSeq == orderSeq){ found = true; break;}
   }
-  if(!found){cerr<<" «Î«Û | ±®µ•≤ª¥Ê‘⁄."<<endl; return;}
+  if(!found){cerr<<" ËØ∑Ê±Ç | Êä•Âçï‰∏çÂ≠òÂú®."<<endl; return;}
 
 	CThostFtdcInputOrderActionField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, appId);   //æ≠ºÕπ´Àæ¥˙¬Î
-	strcpy(req.InvestorID, userId); //Õ∂◊ ’ﬂ¥˙¬Î
-	//strcpy(req.OrderRef, pOrderRef); //±®µ•“˝”√
-	//req.FrontID = frontId;           //«∞÷√±‡∫≈
-	//req.SessionID = sessionId;       //ª·ª∞±‡∫≈
+	strcpy(req.BrokerID, appId);   //ÁªèÁ∫™ÂÖ¨Âè∏‰ª£Á†Å
+	strcpy(req.InvestorID, userId); //ÊäïËµÑËÄÖ‰ª£Á†Å
+	//strcpy(req.OrderRef, pOrderRef); //Êä•ÂçïÂºïÁî®
+	//req.FrontID = frontId;           //ÂâçÁΩÆÁºñÂè∑
+	//req.SessionID = sessionId;       //‰ºöËØùÁºñÂè∑
   strcpy(req.ExchangeID, orderList[i]->ExchangeID);
   strcpy(req.OrderSysID, orderList[i]->OrderSysID);
-	req.ActionFlag = THOST_FTDC_AF_Delete;  //≤Ÿ◊˜±Í÷æ
+	req.ActionFlag = THOST_FTDC_AF_Delete;  //Êìç‰ΩúÊ†áÂøó
 
 	int ret = pUserApi->ReqOrderAction(&req, ++requestId);
-	cerr<< " «Î«Û | ∑¢ÀÕ≥∑µ•..." <<((ret == 0)?"≥…π¶":" ß∞‹") << endl;
+	cerr<< " ËØ∑Ê±Ç | ÂèëÈÄÅÊí§Âçï..." <<((ret == 0)?"ÊàêÂäü":"Â§±Ë¥•") << endl;
 }
 
 void CtpTraderSpi::OnRspOrderAction(
       CThostFtdcInputOrderActionField *pInputOrderAction,
       CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
+  cout<<"this OnRspOrderAction is called"<<endl;
   if (!IsErrorRspInfo(pRspInfo) && pInputOrderAction){
-    cerr<< " œÏ”¶ | ≥∑µ•≥…π¶..."
-      << "Ωª“◊À˘:"<<pInputOrderAction->ExchangeID
-      <<" ±®µ•±‡∫≈:"<<pInputOrderAction->OrderSysID<<endl;
+    cerr<< " ÂìçÂ∫î | Êí§ÂçïÊàêÂäü..."
+      << "‰∫§ÊòìÊâÄ:"<<pInputOrderAction->ExchangeID
+      <<" Êä•ÂçïÁºñÂè∑:"<<pInputOrderAction->OrderSysID<<endl;
   }
 }
 
-///±®µ•ªÿ±®
+///Êä•ÂçïÂõûÊä•
 void CtpTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder)
 {
   CThostFtdcOrderField* order = new CThostFtdcOrderField();
@@ -247,10 +268,10 @@ void CtpTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder)
   }
   if(founded) orderList[i]= order;
   else  orderList.push_back(order);
-  cerr<<" ªÿ±® | ±®µ•“—Ã·Ωª...–Ú∫≈:"<<order->BrokerOrderSeq<<endl;
+  cerr<<" ÂõûÊä• | Êä•ÂçïÂ∑≤Êèê‰∫§...Â∫èÂè∑:"<<order->BrokerOrderSeq<<endl;
 }
 
-///≥…ΩªÕ®÷™
+///Êàê‰∫§ÈÄöÁü•
 void CtpTraderSpi::OnRtnTrade(CThostFtdcTradeField *pTrade)
 {
   CThostFtdcTradeField* trade = new CThostFtdcTradeField();
@@ -263,32 +284,35 @@ void CtpTraderSpi::OnRtnTrade(CThostFtdcTradeField *pTrade)
   }
   if(founded) tradeList[i] = trade;
   else  tradeList.push_back(trade);
-  cerr<<" ªÿ±® | ±®µ•“—≥…Ωª...≥…Ωª±‡∫≈:"<<trade->TradeID<<endl;
+  cerr<<" ÂõûÊä• | Êä•ÂçïÂ∑≤Êàê‰∫§...Êàê‰∫§ÁºñÂè∑:"<<trade->TradeID<<endl;
 }
 
 void CtpTraderSpi::OnFrontDisconnected(int nReason)
 {
-	cerr<<" œÏ”¶ | ¡¨Ω”÷–∂œ..."
+	cerr<<" ÂìçÂ∫î | ËøûÊé•‰∏≠Êñ≠..."
 	  << " reason=" << nReason << endl;
 }
 
+
 void CtpTraderSpi::OnHeartBeatWarning(int nTimeLapse)
 {
-	cerr<<" œÏ”¶ | –ƒÃ¯≥¨ ±æØ∏Ê..."
+	cerr<<" ÂìçÂ∫î | ÂøÉË∑≥Ë∂ÖÊó∂Ë≠¶Âëä..."
 	  << " TimerLapse = " << nTimeLapse << endl;
 }
 
 void CtpTraderSpi::OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
+    cout<<"this OnRspError is called"<<endl;
 	IsErrorRspInfo(pRspInfo);
 }
 
 bool CtpTraderSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)
 {
-	// »Áπ˚ErrorID != 0, Àµ√˜ ’µΩ¡À¥ÌŒÛµƒœÏ”¶
+	// Â¶ÇÊûúErrorID != 0, ËØ¥ÊòéÊî∂Âà∞‰∫ÜÈîôËØØÁöÑÂìçÂ∫î
 	bool ret = ((pRspInfo) && (pRspInfo->ErrorID != 0));
   if (ret){
-    cerr<<" œÏ”¶ | "<<pRspInfo->ErrorMsg<<endl;
+    basicPrint(pRspInfo->ErrorMsg);
+    cerr<<" ÂìçÂ∫î ÈîôËØØ‰ø°ÊÅØ | "<<pRspInfo->ErrorMsg<<endl;
   }
 	return ret;
 }
@@ -297,27 +321,27 @@ void CtpTraderSpi::PrintOrders(){
   CThostFtdcOrderField* pOrder;
   for(unsigned int i=0; i<orderList.size(); i++){
     pOrder = orderList[i];
-    cerr<<" ±®µ• | ∫œ‘º:"<<pOrder->InstrumentID
-      <<" ∑ΩœÚ:"<<MapDirection(pOrder->Direction,false)
-      <<" ø™∆Ω:"<<MapOffset(pOrder->CombOffsetFlag[0],false)
-      <<" º€∏Ò:"<<pOrder->LimitPrice
-      <<"  ˝¡ø:"<<pOrder->VolumeTotalOriginal
-      <<" –Ú∫≈:"<<pOrder->BrokerOrderSeq
-      <<" ±®µ•±‡∫≈:"<<pOrder->OrderSysID
-      <<" ◊¥Ã¨:"<<pOrder->StatusMsg<<endl;
+    cerr<<" Êä•Âçï | ÂêàÁ∫¶:"<<pOrder->InstrumentID
+      <<" ÊñπÂêë:"<<MapDirection(pOrder->Direction,false)
+      <<" ÂºÄÂπ≥:"<<MapOffset(pOrder->CombOffsetFlag[0],false)
+      <<" ‰ª∑Ê†º:"<<pOrder->LimitPrice
+      <<" Êï∞Èáè:"<<pOrder->VolumeTotalOriginal
+      <<" Â∫èÂè∑:"<<pOrder->BrokerOrderSeq
+      <<" Êä•ÂçïÁºñÂè∑:"<<pOrder->OrderSysID
+      <<" Áä∂ÊÄÅ:"<<pOrder->StatusMsg<<endl;
   }
 }
 void CtpTraderSpi::PrintTrades(){
   CThostFtdcTradeField* pTrade;
   for(unsigned int i=0; i<tradeList.size(); i++){
     pTrade = tradeList[i];
-    cerr<<" ≥…Ωª | ∫œ‘º:"<< pTrade->InstrumentID
-      <<" ∑ΩœÚ:"<<MapDirection(pTrade->Direction,false)
-      <<" ø™∆Ω:"<<MapOffset(pTrade->OffsetFlag,false)
-      <<" º€∏Ò:"<<pTrade->Price
-      <<"  ˝¡ø:"<<pTrade->Volume
-      <<" ±®µ•±‡∫≈:"<<pTrade->OrderSysID
-      <<" ≥…Ωª±‡∫≈:"<<pTrade->TradeID<<endl;
+    cerr<<" Êàê‰∫§ | ÂêàÁ∫¶:"<< pTrade->InstrumentID
+      <<" ÊñπÂêë:"<<MapDirection(pTrade->Direction,false)
+      <<" ÂºÄÂπ≥:"<<MapOffset(pTrade->OffsetFlag,false)
+      <<" ‰ª∑Ê†º:"<<pTrade->Price
+      <<" Êï∞Èáè:"<<pTrade->Volume
+      <<" Êä•ÂçïÁºñÂè∑:"<<pTrade->OrderSysID
+      <<" Êàê‰∫§ÁºñÂè∑:"<<pTrade->TradeID<<endl;
   }
 }
 char MapDirection(char src, bool toOrig=true){
@@ -340,4 +364,3 @@ char MapOffset(char src, bool toOrig=true){
   }
   return src;
 }
-

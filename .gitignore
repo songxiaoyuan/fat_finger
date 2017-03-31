@@ -1,3 +1,4 @@
 api/**
 **/*.con
 **/*.o
+fatFinger/*.txt

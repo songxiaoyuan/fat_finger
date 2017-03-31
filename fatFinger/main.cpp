@@ -6,13 +6,13 @@ using namespace std;
 void test_md(void)
 {
   //初始化UserApi
-  CThostFtdcMdApi* pUserApi=CThostFtdcMdApi::CreateFtdcMdApi();
-  CtpMdSpi* pUserSpi=new CtpMdSpi(pUserApi); //创建回调处理类对象MdSpi
-  pUserApi->RegisterSpi(pUserSpi);			 // 回调对象注入接口类
-  pUserApi->RegisterFront(mdFront);		     // 注册行情前置地址
-  pUserApi->Init();      //接口线程启动, 开始工作
-  ShowMdCommand(pUserSpi,true);
-  pUserApi->Join();      //等待接口线程退出
+  CThostFtdcMdApi* pMdApi=CThostFtdcMdApi::CreateFtdcMdApi();
+  CtpMdSpi* pMdSpi=new CtpMdSpi(pMdApi); //创建回调处理类对象MdSpi
+  pMdApi->RegisterSpi(pMdSpi);			 // 回调对象注入接口类
+  pMdApi->RegisterFront(mdFront);		     // 注册行情前置地址
+  pMdApi->Init();      //接口线程启动, 开始工作
+  ShowMdCommand(pMdSpi,true);
+  pMdApi->Join();      //等待接口线程退出
   //pUserApi->Release(); //接口对象释放
   cout<<"extis!!!"<<endl;
 }
@@ -20,16 +20,29 @@ void test_md(void)
 void test_trader(void)
 {
   //初始化UserApi
-  CThostFtdcTraderApi* pUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi();
-  CtpTraderSpi* pUserSpi = new CtpTraderSpi(pUserApi);
-  pUserApi->RegisterSpi((CThostFtdcTraderSpi*)pUserSpi);			// 注册事件类
-  pUserApi->SubscribePublicTopic(THOST_TERT_RESTART);					// 注册公有流
-  pUserApi->SubscribePrivateTopic(THOST_TERT_RESTART);			  // 注册私有流
-  pUserApi->RegisterFront(tradeFront);							// 注册交易前置地址
+  CThostFtdcTraderApi* pTraderApi = CThostFtdcTraderApi::CreateFtdcTraderApi();
+  CtpTraderSpi* pTraderSpi = new CtpTraderSpi(pTraderApi);
+  pTraderApi->RegisterSpi((CThostFtdcTraderSpi*)pTraderSpi);			// 注册事件类
+  pTraderApi->SubscribePublicTopic(THOST_TERT_RESTART);					// 注册公有流
+  pTraderApi->SubscribePrivateTopic(THOST_TERT_RESTART);			  // 注册私有流
+  pTraderApi->RegisterFront(tradeFront);							// 注册交易前置地址
+  pTraderApi->Init();
 
-  pUserApi->Init();
-  ShowTraderCommand(pUserSpi,true);
-  pUserApi->Join();
+  //初始化UserApi
+  /*
+  CThostFtdcMdApi* pMdApi=CThostFtdcMdApi::CreateFtdcMdApi();
+  CtpMdSpi* pMdSpi=new CtpMdSpi(pMdApi); //创建回调处理类对象MdSpi
+  pMdApi->RegisterSpi(pMdSpi);       // 回调对象注入接口类
+  pMdApi->RegisterFront(mdFront);        // 注册行情前置地址
+  pMdApi->Init();      //接口线程启动, 开始工作
+  */
+
+  int cmd;
+  cin>>cmd;
+  ShowTraderCommand(pTraderSpi,true);
+  //ShowMdCommand(pMdSpi,true,cmd);
+  pTraderApi->Join();
+  //pMdApi->Join();      //等待接口线程退出
   cout<<"the trader isrequestId exitst"<<endl;
   //pUserApi->Release();
 }

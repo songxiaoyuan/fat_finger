@@ -41,15 +41,17 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
   TThostFtdcVolumeType          vol;
   TThostFtdcSequenceNoType      orderSeq;
 
-  int cmd;  cin>>cmd;
+  int cmd;
+  cin>>cmd;
   switch(cmd){
     case 1: {
               cerr<<" 应用单元 > ";
               cerr<<" 投资者代码 > ";
               cerr<<" 交易密码 > ";
-              p->ReqUserLogin(appId,userId,passwd); break;
-              //p->ReqQrySettlementInfo();
-              //p->ReqSettlementInfoConfirm(); break;
+              p->ReqUserLogin(appId,userId,passwd);
+              cout<<"dingyue"<<endl;
+              p->ReqQrySettlementInfo();
+              p->ReqSettlementInfoConfirm(); break;
             }
     case 2: {
                 p->ReqQrySettlementInfo();
@@ -85,7 +87,7 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
 }
 
 
-void ShowMdCommand(CtpMdSpi* p, bool print=false){
+void ShowMdCommand(CtpMdSpi* p, bool print=false,int cmd=1){
   if(print){
     cerr<<"-----------------------------------------------"<<endl;
     cerr<<" [1] ReqUserLogin              -- 登录并订阅行情"<<endl;
@@ -99,8 +101,8 @@ void ShowMdCommand(CtpMdSpi* p, bool print=false){
    p->SubscribeMarketData(ppInstrumentID,NumOfInstrumentID);
    */
 
-  int cmd;
-  cin>>cmd;
+  //int cmd;
+  //cin>>cmd;
   switch(cmd){
     case 1: {
               cout<<"登录"<<endl;

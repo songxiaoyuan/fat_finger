@@ -47,6 +47,8 @@
 		<Unit filename="api/trade/public/ThostFtdcUserApiStruct.h" />
 		<Unit filename="api/trader/traderspi.cpp" />
 		<Unit filename="api/trader/traderspi.h" />
+		<Unit filename="basicFun/basicFun.cpp" />
+		<Unit filename="basicFun/basicFun.h" />
 		<Unit filename="config.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />

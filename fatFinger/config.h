@@ -8,7 +8,7 @@ int requestId=0;
 
 // 前置地址
 char mdFront[]   ="tcp://180.168.146.187:10010";
-char tradeFront[]="tcp://180.168.146.187:10010";
+char tradeFront[]="tcp://180.168.146.187:10000";
 
 //所采用的账号和密码
 TThostFtdcBrokerIDType   appId= "9999";

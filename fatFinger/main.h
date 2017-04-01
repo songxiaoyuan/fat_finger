@@ -31,13 +31,14 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
     cerr<<" [8] PrintOrders               -- 显示报单"<<endl;
     cerr<<" [9] PrintOrders               -- 显示成交"<<endl;
     cerr<<" [0] Exit                      -- 退出"<<endl;
+    cerr<<" [0] Exit                      -- 退出"<<endl;
     cerr<<"----------------------------------------------"<<endl;
   }
 
-  TThostFtdcInstrumentIDType    instId;
-  TThostFtdcDirectionType       dir;
-  TThostFtdcCombOffsetFlagType  kpp;
-  TThostFtdcPriceType           price;
+  //TThostFtdcInstrumentIDType    instId;
+  //TThostFtdcDirectionType       dir;
+  //TThostFtdcCombOffsetFlagType  kpp;
+  //TThostFtdcPriceType           price;
   TThostFtdcVolumeType          vol;
   TThostFtdcSequenceNoType      orderSeq;
 
@@ -51,7 +52,8 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
               p->ReqUserLogin(appId,userId,passwd);
               cout<<"dingyue"<<endl;
               p->ReqQrySettlementInfo();
-              p->ReqSettlementInfoConfirm(); break;
+              p->ReqSettlementInfoConfirm();
+              break;
             }
     case 2: {
                 p->ReqQrySettlementInfo();
@@ -59,20 +61,32 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
             }
     case 3: {
               cerr<<" 合约 > ";
+              TThostFtdcInstrumentIDType instId = "au1706";
               p->ReqQryInstrument(instId); break;
             }
     case 4: p->ReqQryTradingAccount(); break;
     case 5: {
               cerr<<" 合约 > ";
               //cin>>instId;
+              TThostFtdcInstrumentIDType instId = "au1706";
               p->ReqQryInvestorPosition(instId); break;
             }
     case 6: {
-              cerr<<" 合约 > "; cin>>instId;
-              cerr<<" 方向 > "; cin>>dir;
-              cerr<<" 开平 > "; cin>>kpp;
-              cerr<<" 价格 > "; cin>>price;
-              cerr<<" 数量 > "; cin>>vol;
+              cerr<<" 合约 > ";
+              //cin>>instId;
+              TThostFtdcInstrumentIDType instId = "au1706";
+              cerr<<" 方向 > ";
+              //cin>>dir;
+              TThostFtdcDirectionType dir = '0';
+              cerr<<" 开平 > ";
+              //cin>>kpp;
+              TThostFtdcCombOffsetFlagType kpp = "0";
+              cerr<<" 价格 > ";
+              //cin>>price;
+              TThostFtdcPriceType price = 5600;
+              cerr<<" 数量 > ";
+              //cin>>vol;
+              TThostFtdcVolumeType vol =1;
               p->ReqOrderInsert(instId,dir,kpp,price,vol); break;
             }
     case 7: {
@@ -83,7 +97,8 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
     case 9: p->PrintTrades();break;
     case 0: exit(0);
   }
-  ShowTraderCommand(p);
+  cout<<"trader out"<<endl;
+  //ShowTraderCommand(p);
 }
 
 
@@ -102,13 +117,17 @@ void ShowMdCommand(CtpMdSpi* p, bool print=false,int cmd=1){
    */
 
   //int cmd;
-  //cin>>cmd;
+  cin>>cmd;
   switch(cmd){
     case 1: {
               cout<<"登录"<<endl;
               p->ReqUserLogin(appId,userId,passwd);
               cout<<"合约"<<endl;
-              p->SubscribeMarketData(ppInstrumentID,NumOfInstrumentID); break;
+              p->SubscribeMarketData(ppInstrumentID,NumOfInstrumentID);
+              string str;
+              cin>>str;
+              cout<<str<<endl;
+              break;
             }
     case 0: exit(0);
   }

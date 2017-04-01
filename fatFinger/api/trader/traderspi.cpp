@@ -31,7 +31,7 @@ TThostFtdcTimeType confirmTime ="10:44";
 
 void CtpTraderSpi::OnFrontConnected()
 {
-	cerr<<" 连接交易前置...成功"<<endl;
+	cerr<<" 连接交易前置.trader..成功"<<endl;
 }
 
 void CtpTraderSpi::ReqUserLogin(TThostFtdcBrokerIDType	vAppId,

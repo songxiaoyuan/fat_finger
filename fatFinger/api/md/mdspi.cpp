@@ -27,7 +27,7 @@ void CtpMdSpi::OnHeartBeatWarning(int nTimeLapse)
 
 void CtpMdSpi::OnFrontConnected()
 {
-	cerr<<" 连接交易前置...成功"<<endl;
+	cerr<<" 连接交易前置 md ...成功"<<endl;
 }
 
 void CtpMdSpi::ReqUserLogin(TThostFtdcBrokerIDType	appId,
@@ -75,6 +75,22 @@ void CtpMdSpi::OnRspUnSubMarketData(
 void CtpMdSpi::OnRtnDepthMarketData(
              CThostFtdcDepthMarketDataField *pDepthMarketData)
 {
+  cout<<"this is one"<<endl;
+  TThostFtdcInstrumentIDType tmp ="au1706";
+  TThostFtdcInstrumentIDType tmp1 ="au1706";
+  if(strcmp(pDepthMarketData->InstrumentID,tmp)==0){
+    cout<<"this is test"<<endl;
+      cerr<<" 行情 | 合约:"<<pDepthMarketData->InstrumentID
+    <<" 现价:"<<pDepthMarketData->LastPrice
+    <<" 最高价:" << pDepthMarketData->HighestPrice
+    <<" 最低价:" << pDepthMarketData->LowestPrice
+    <<" 卖一价:" << pDepthMarketData->AskPrice1
+    <<" 卖一量:" << pDepthMarketData->AskVolume1
+    <<" 买一价:" << pDepthMarketData->BidPrice1
+    <<" 买一量:" << pDepthMarketData->BidVolume1
+    <<" 持仓量:"<< pDepthMarketData->OpenInterest <<endl;
+  }
+  /*
   cerr<<" 行情 | 合约:"<<pDepthMarketData->InstrumentID
     <<" 现价:"<<pDepthMarketData->LastPrice
     <<" 最高价:" << pDepthMarketData->HighestPrice
@@ -84,6 +100,8 @@ void CtpMdSpi::OnRtnDepthMarketData(
     <<" 买一价:" << pDepthMarketData->BidPrice1
     <<" 买一量:" << pDepthMarketData->BidVolume1
     <<" 持仓量:"<< pDepthMarketData->OpenInterest <<endl;
+    */
+   cout<<"this is two"<<endl;
 }
 
 bool CtpMdSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)

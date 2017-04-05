@@ -174,8 +174,7 @@ void CtpTraderSpi::OnRspQryInvestorPosition(
 }
 
 void CtpTraderSpi::ReqOrderInsert(TThostFtdcInstrumentIDType instId,
-    TThostFtdcDirectionType dir, TThostFtdcCombOffsetFlagType kpp,
-    TThostFtdcPriceType price,   TThostFtdcVolumeType vol)
+    TThostFtdcDirectionType dir,TThostFtdcPriceType price, TThostFtdcVolumeType vol)
 {
 	CThostFtdcInputOrderField req;
 	memset(&req, 0, sizeof(req));
@@ -195,7 +194,8 @@ void CtpTraderSpi::ReqOrderInsert(TThostFtdcInstrumentIDType instId,
     req.TimeCondition = THOST_FTDC_TC_GFD;  //有效期类型:当日有效
   }
   req.Direction = MapDirection(dir,true);  //买卖方向
-	req.CombOffsetFlag[0] = MapOffset(kpp[0],true); //组合开平标志:开仓
+	//req.CombOffsetFlag[0] = MapOffset(kpp[0],true); //组合开平标志:开仓
+	req.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 	req.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;	  //组合投机套保标志
 	req.VolumeTotalOriginal = vol;	///数量
 	req.VolumeCondition = THOST_FTDC_VC_AV; //成交量类型:任何数量

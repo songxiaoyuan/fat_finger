@@ -45,8 +45,12 @@ public:
 	        TThostFtdcUserIDType	userId,	TThostFtdcPasswordType	passwd);
 	void SubscribeMarketData(char* instIdList[],int len);
 	bool IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo);
+	void setDPMarketDataField(CThostFtdcDepthMarketDataField *pDepthMarketData);
+	CThostFtdcDepthMarketDataField* getDPMarketDataField();
+
 private:
   CThostFtdcMdApi* pUserApi;
+  CThostFtdcDepthMarketDataField *pCurrentDepthMarketData;
 };
 
 #endif

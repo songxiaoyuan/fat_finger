@@ -15,6 +15,7 @@
 					<Add option="-g" />
 					<Add directory="../fatFinger" />
 					<Add directory="api/test" />
+					<Add directory="createThead" />
 				</Compiler>
 				<Linker>
 					<Add library="/home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/thostmduserapi.so" />
@@ -29,6 +30,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="api/test" />
+					<Add directory="createThead" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />

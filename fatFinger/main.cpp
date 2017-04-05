@@ -51,7 +51,7 @@ void test_trader(void)
   pTraderApi->Release();
   //pMdApi->Join();      //等待接口线程退出
   cin>>str;
-  cout<<"tghe sttttttt"<<endl;
+  cout<<"tmp"<<endl;
   cout<<str<<endl;
   cout<<"the trader isrequestId exitst"<<endl;
   //pUserApi->Release();

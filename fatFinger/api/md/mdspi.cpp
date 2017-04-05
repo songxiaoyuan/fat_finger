@@ -6,6 +6,7 @@
 
 using namespace std;
 extern int requestId;
+extern pthread_mutex_t MUTEX;
 
 void CtpMdSpi::OnRspError(CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast)
@@ -28,6 +29,16 @@ void CtpMdSpi::OnHeartBeatWarning(int nTimeLapse)
 void CtpMdSpi::OnFrontConnected()
 {
 	cerr<<" 连接交易前置 md ...成功"<<endl;
+}
+
+void CtpMdSpi::setDPMarketDataField(CThostFtdcDepthMarketDataField *pDepthMarketData){
+  pthread_mutex_lock(&MUTEX);
+  pCurrentDepthMarketData = pDepthMarketData;
+  pthread_mutex_unlock(&MUTEX);
+}
+
+CThostFtdcDepthMarketDataField* CtpMdSpi::getDPMarketDataField(){
+  return pCurrentDepthMarketData;
 }
 
 void CtpMdSpi::ReqUserLogin(TThostFtdcBrokerIDType	appId,
@@ -75,22 +86,19 @@ void CtpMdSpi::OnRspUnSubMarketData(
 void CtpMdSpi::OnRtnDepthMarketData(
              CThostFtdcDepthMarketDataField *pDepthMarketData)
 {
-  cout<<"this is one"<<endl;
+  //pthread_mutex_lock(&MUTEX);
   TThostFtdcInstrumentIDType tmp ="au1706";
-  TThostFtdcInstrumentIDType tmp1 ="au1706";
+  cout<<pDepthMarketData<<endl;
+  setDPMarketDataField(pDepthMarketData);
   if(strcmp(pDepthMarketData->InstrumentID,tmp)==0){
-    cout<<"this is test"<<endl;
-      cerr<<" 行情 | 合约:"<<pDepthMarketData->InstrumentID
-    <<" 现价:"<<pDepthMarketData->LastPrice
-    <<" 最高价:" << pDepthMarketData->HighestPrice
-    <<" 最低价:" << pDepthMarketData->LowestPrice
-    <<" 卖一价:" << pDepthMarketData->AskPrice1
-    <<" 卖一量:" << pDepthMarketData->AskVolume1
-    <<" 买一价:" << pDepthMarketData->BidPrice1
-    <<" 买一量:" << pDepthMarketData->BidVolume1
-    <<" 持仓量:"<< pDepthMarketData->OpenInterest <<endl;
+    cout<<1<<endl;
   }
+  else{
+    cout<<2<<endl;
+  }
+ //pthread_mutex_unlock(&MUTEX);
   /*
+
   cerr<<" 行情 | 合约:"<<pDepthMarketData->InstrumentID
     <<" 现价:"<<pDepthMarketData->LastPrice
     <<" 最高价:" << pDepthMarketData->HighestPrice
@@ -100,8 +108,7 @@ void CtpMdSpi::OnRtnDepthMarketData(
     <<" 买一价:" << pDepthMarketData->BidPrice1
     <<" 买一量:" << pDepthMarketData->BidVolume1
     <<" 持仓量:"<< pDepthMarketData->OpenInterest <<endl;
-    */
-   cout<<"this is two"<<endl;
+*/
 }
 
 bool CtpMdSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)

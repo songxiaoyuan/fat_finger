@@ -3,6 +3,7 @@
 
 #include "config.h"
 #include "basicFun/basicFun.h"
+#include "createThread/createThread.h"
 #include "api/trade/public/ThostFtdcMdApi.h"
 #include "api/trade/public/ThostFtdcTraderApi.h"
 #include "api/md/mdspi.h"
@@ -17,8 +18,11 @@ extern TThostFtdcUserIDType	 userId;
 extern TThostFtdcPasswordType   passwd;
 extern char *ppInstrumentID[];
 extern int NumOfInstrumentID;
+extern int TEST;
+//extern pthread_mutex_t MUTEX;
 
 void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
+  cout<<TEST<<endl;
   if(print){
     cerr<<"-----------------------------------------------"<<endl;
     cerr<<" [1] ReqUserLogin              -- 登录"<<endl;
@@ -60,19 +64,19 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
                 p->ReqSettlementInfoConfirm(); break;
             }
     case 3: {
-              cerr<<" 合约 > ";
+              cerr<<" 合约1 > ";
               TThostFtdcInstrumentIDType instId = "au1706";
               p->ReqQryInstrument(instId); break;
             }
     case 4: p->ReqQryTradingAccount(); break;
     case 5: {
-              cerr<<" 合约 > ";
+              cerr<<" 合约2 > ";
               //cin>>instId;
               TThostFtdcInstrumentIDType instId = "au1706";
               p->ReqQryInvestorPosition(instId); break;
             }
     case 6: {
-              cerr<<" 合约 > ";
+              cerr<<" 合约3 > ";
               //cin>>instId;
               TThostFtdcInstrumentIDType instId = "au1706";
               cerr<<" 方向 > ";
@@ -87,7 +91,7 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
               cerr<<" 数量 > ";
               //cin>>vol;
               TThostFtdcVolumeType vol =1;
-              p->ReqOrderInsert(instId,dir,kpp,price,vol); break;
+              p->ReqOrderInsert(instId,dir,price,vol); break;
             }
     case 7: {
               cerr<<" 序号 > "; cin>>orderSeq;
@@ -122,7 +126,7 @@ void ShowMdCommand(CtpMdSpi* p, bool print=false,int cmd=1){
     case 1: {
               cout<<"登录"<<endl;
               p->ReqUserLogin(appId,userId,passwd);
-              cout<<"合约"<<endl;
+              cout<<"合约2"<<endl;
               p->SubscribeMarketData(ppInstrumentID,NumOfInstrumentID);
               string str;
               cin>>str;

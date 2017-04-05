@@ -5,8 +5,6 @@
 #include <string.h>
 
 using namespace std;
-extern int requestId;
-extern pthread_mutex_t MUTEX;
 
 void CtpMdSpi::OnRspError(CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast)
@@ -41,12 +39,12 @@ CThostFtdcDepthMarketDataField* CtpMdSpi::getDPMarketDataField(){
   return pCurrentDepthMarketData;
 }
 
-void CtpMdSpi::ReqUserLogin(TThostFtdcBrokerIDType	appId,
+void CtpMdSpi::ReqUserLogin(TThostFtdcBrokerIDType	APPID,
 	        TThostFtdcUserIDType	userId,	TThostFtdcPasswordType	passwd)
 {
 	CThostFtdcReqUserLoginField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, appId);
+	strcpy(req.BrokerID, APPID);
 	strcpy(req.UserID, userId);
 	strcpy(req.Password, passwd);
 	int ret = pUserApi->ReqUserLogin(&req, ++requestId);
@@ -87,15 +85,26 @@ void CtpMdSpi::OnRtnDepthMarketData(
              CThostFtdcDepthMarketDataField *pDepthMarketData)
 {
   //pthread_mutex_lock(&MUTEX);
-  TThostFtdcInstrumentIDType tmp ="au1706";
-  cout<<pDepthMarketData<<endl;
+  //将接受到的数据保存在对象里面，方便其他线程以后的读取。
+  /*
   setDPMarketDataField(pDepthMarketData);
-  if(strcmp(pDepthMarketData->InstrumentID,tmp)==0){
-    cout<<1<<endl;
+  string InstrumentID = pDepthMarketData->InstrumentID;
+
+  if(PTHREADCONDS.find(InstrumentID) != PTHREADCONDS.end()){
+    //根据获取到的数据的合约编码，发送信号，去唤醒相应的线程去处理数据。
+    pthread_cond_signal(&PTHREADCONDS[InstrumentID]);
   }
   else{
-    cout<<2<<endl;
+    cout<<"the InstrumentID "<<InstrumentID<<" is not found "<<endl;
   }
+  */
+   TThostFtdcInstrumentIDType tmp ="au1706";
+  if(strcmp(pDepthMarketData->InstrumentID,tmp)==0){
+     cout<<1<<endl;
+   }
+   else{
+     cout<<2<<endl;
+   }
  //pthread_mutex_unlock(&MUTEX);
   /*
 

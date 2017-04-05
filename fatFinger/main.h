@@ -13,7 +13,7 @@
 #include <stdlib.h>
 using namespace std;
 
-extern TThostFtdcBrokerIDType   appId;
+extern TThostFtdcBrokerIDType   APPID;
 extern TThostFtdcUserIDType	 userId;
 extern TThostFtdcPasswordType   passwd;
 extern char *ppInstrumentID[];
@@ -53,7 +53,7 @@ void ShowTraderCommand(CtpTraderSpi* p, bool print=false){
               cerr<<" 应用单元 > ";
               cerr<<" 投资者代码 > ";
               cerr<<" 交易密码 > ";
-              p->ReqUserLogin(appId,userId,passwd);
+              p->ReqUserLogin(APPID,userId,passwd);
               cout<<"dingyue"<<endl;
               p->ReqQrySettlementInfo();
               p->ReqSettlementInfoConfirm();
@@ -115,7 +115,7 @@ void ShowMdCommand(CtpMdSpi* p, bool print=false,int cmd=1){
   }
   /*
   cout<<"登录"<<endl;
-  p->ReqUserLogin(appId,userId,passwd);
+  p->ReqUserLogin(APPID,userId,passwd);
   cout<<"合约"<<endl;
    p->SubscribeMarketData(ppInstrumentID,NumOfInstrumentID);
    */
@@ -125,7 +125,7 @@ void ShowMdCommand(CtpMdSpi* p, bool print=false,int cmd=1){
   switch(cmd){
     case 1: {
               cout<<"登录"<<endl;
-              p->ReqUserLogin(appId,userId,passwd);
+              p->ReqUserLogin(APPID,userId,passwd);
               cout<<"合约2"<<endl;
               p->SubscribeMarketData(ppInstrumentID,NumOfInstrumentID);
               string str;

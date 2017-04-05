@@ -9,8 +9,6 @@
 
 using namespace std;
 
-extern TThostFtdcBrokerIDType appId;		// 应用单元
-extern TThostFtdcUserIDType userId;		// 投资者代码
 
 
 extern int requestId;
@@ -34,14 +32,14 @@ void CtpTraderSpi::OnFrontConnected()
 	cerr<<" 连接交易前置.trader..成功"<<endl;
 }
 
-void CtpTraderSpi::ReqUserLogin(TThostFtdcBrokerIDType	vAppId,
+void CtpTraderSpi::ReqUserLogin(TThostFtdcBrokerIDType	vAPPID,
 	        TThostFtdcUserIDType	vUserId,	TThostFtdcPasswordType	vPasswd)
 {
 
 	CThostFtdcReqUserLoginField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, vAppId); strcpy(appId, vAppId);
-	strcpy(req.UserID, vUserId);  strcpy(userId, vUserId);
+	strcpy(req.BrokerID, vAPPID); strcpy(APPID, vAPPID);
+	strcpy(req.UserID, vUserId);  strcpy(USERID, vUserId);
 	strcpy(req.Password, vPasswd);
 	int ret = pUserApi->ReqUserLogin(&req, ++requestId);
   cerr<<" 请求 | 发送登录..."<<((ret == 0) ? "成功" :"失败") << endl;
@@ -65,8 +63,8 @@ void CtpTraderSpi::ReqQrySettlementInfo()
 {
 	CThostFtdcQrySettlementInfoField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, appId);
-	strcpy(req.InvestorID, userId);
+	strcpy(req.BrokerID, APPID);
+	strcpy(req.InvestorID, USERID);
 	int ret = pUserApi->ReqQrySettlementInfo(&req, ++requestId);
 	cerr<<" 请求 | 发送结算结果查询..."<<((ret == 0)?"成功":"失败")<<endl;
 }
@@ -75,8 +73,8 @@ void CtpTraderSpi::ReqSettlementInfoConfirm()
 {
 	CThostFtdcSettlementInfoConfirmField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, appId);
-	strcpy(req.InvestorID, userId);
+	strcpy(req.BrokerID, APPID);
+	strcpy(req.InvestorID, USERID);
 	int ret = pUserApi->ReqSettlementInfoConfirm(&req, ++requestId);
 	cerr<<" 请求 | 发送结算单确认..."<<((ret == 0)?"成功":"失败")<<endl;
 }
@@ -121,8 +119,8 @@ void CtpTraderSpi::ReqQryTradingAccount()
 {
 	CThostFtdcQryTradingAccountField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, appId);
-	strcpy(req.InvestorID, userId);
+	strcpy(req.BrokerID, APPID);
+	strcpy(req.InvestorID, USERID);
 	int ret = pUserApi->ReqQryTradingAccount(&req, ++requestId);
 	cerr<<" 请求 | 发送资金查询..."<<((ret == 0)?"成功":"失败")<<endl;
 
@@ -150,8 +148,8 @@ void CtpTraderSpi::ReqQryInvestorPosition(TThostFtdcInstrumentIDType instId)
 {
 	CThostFtdcQryInvestorPositionField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, appId);
-	strcpy(req.InvestorID, userId);
+	strcpy(req.BrokerID, APPID);
+	strcpy(req.InvestorID, USERID);
 	strcpy(req.InstrumentID, instId);
 	int ret = pUserApi->ReqQryInvestorPosition(&req, ++requestId);
 	cerr<<" 请求 | 发送持仓查询..."<<((ret == 0)?"成功":"失败")<<endl;
@@ -178,8 +176,8 @@ void CtpTraderSpi::ReqOrderInsert(TThostFtdcInstrumentIDType instId,
 {
 	CThostFtdcInputOrderField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, appId);  //应用单元代码
-	strcpy(req.InvestorID, userId); //投资者代码
+	strcpy(req.BrokerID, APPID);  //应用单元代码
+	strcpy(req.InvestorID, USERID); //投资者代码
 	strcpy(req.InstrumentID, instId); //合约代码
 	strcpy(req.OrderRef, orderRef);  //报单引用
   int nextOrderRef = atoi(orderRef);
@@ -230,8 +228,8 @@ void CtpTraderSpi::ReqOrderAction(TThostFtdcSequenceNoType orderSeq)
 
 	CThostFtdcInputOrderActionField req;
 	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, appId);   //经纪公司代码
-	strcpy(req.InvestorID, userId); //投资者代码
+	strcpy(req.BrokerID, APPID);   //经纪公司代码
+	strcpy(req.InvestorID, USERID); //投资者代码
 	//strcpy(req.OrderRef, pOrderRef); //报单引用
 	//req.FrontID = frontId;           //前置编号
 	//req.SessionID = sessionId;       //会话编号

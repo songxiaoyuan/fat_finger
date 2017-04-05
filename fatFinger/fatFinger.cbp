@@ -20,6 +20,7 @@
 				<Linker>
 					<Add library="/home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/thostmduserapi.so" />
 					<Add library="/home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/thosttraderapi.so" />
+					<Add library="/usr/lib/x86_64-linux-gnu/libpthread.so" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -51,7 +52,10 @@
 		<Unit filename="api/trader/traderspi.h" />
 		<Unit filename="basicFun/basicFun.cpp" />
 		<Unit filename="basicFun/basicFun.h" />
-		<Unit filename="config.h" />
+		<Unit filename="createThread/createThread.cpp" />
+		<Unit filename="createThread/createThread.h" />
+		<Unit filename="init/init.cpp" />
+		<Unit filename="init/init.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h" />
 		<Extensions>

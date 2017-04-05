@@ -4,6 +4,9 @@
 
 #include "api/trade/public/ThostFtdcTraderApi.h"
 
+extern TThostFtdcBrokerIDType APPID;		// 应用单元
+extern TThostFtdcUserIDType USERID;		// 投资者代码
+
 class CtpTraderSpi : public CThostFtdcTraderSpi
 {
 public:

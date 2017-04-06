@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1491442394 source:/home/sxy/Desktop/fat_finger/fatFinger/main.cpp
+1491460212 source:/home/sxy/Desktop/fat_finger/fatFinger/main.cpp
 	"config.h"
 	"init/init.h"
 	"createThread/createThread.h"
@@ -32,7 +32,7 @@
 
 1490840139 /home/sxy/Desktop/fat_finger/fatFinger/api/test/test.h
 
-1491398237 source:/home/sxy/Desktop/fat_finger/fatFinger/api/trader/traderspi.cpp
+1491461742 source:/home/sxy/Desktop/fat_finger/fatFinger/api/trader/traderspi.cpp
 	"api/trade/public/ThostFtdcTraderApi.h"
 	"api/trader/traderspi.h"
 	"basicFun/basicFun.h"
@@ -41,6 +41,7 @@
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
+	<pthread.h>
 
 1465180016 /home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/ThostFtdcTraderApi.h
 	"ThostFtdcUserApiStruct.h"
@@ -77,10 +78,10 @@
 1490936360 source:/home/sxy/Desktop/fat_finger/fatFinger/basicFun/basicFun.cpp
 	"basicFun.h"
 
-1491455358 source:/home/sxy/Desktop/fat_finger/fatFinger/createThread/createThread.cpp
+1491460448 source:/home/sxy/Desktop/fat_finger/fatFinger/createThread/createThread.cpp
 	"createThread.h"
 
-1491458949 /home/sxy/Desktop/fat_finger/fatFinger/createThread/createThread.h
+1491461878 /home/sxy/Desktop/fat_finger/fatFinger/createThread/createThread.h
 	"api/md/mdspi.h"
 	"api/trader/traderspi.h"
 	<pthread.h>

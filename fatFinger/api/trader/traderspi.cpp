@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <pthread.h>
 
 using namespace std;
 
@@ -266,7 +267,8 @@ void CtpTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder)
   }
   if(founded) orderList[i]= order;
   else  orderList.push_back(order);
-  cerr<<" 回报 | 报单已提交...序号:"<<order->BrokerOrderSeq<<endl;
+  pthread_t tmp = pthread_self();
+  cerr<<" 回报 | 报单已提交...序号:"<<order->BrokerOrderSeq<< " the thread is "<<tmp<<endl;
 }
 
 ///成交通知

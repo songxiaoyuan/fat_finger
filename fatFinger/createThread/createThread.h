@@ -3,13 +3,13 @@
 #define CREATETHREAD_H
 #include "api/md/mdspi.h"
 #include "api/trader/traderspi.h"
-
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <iostream>
 #include <string.h>
+#include <unordered_map>
 using namespace std;
 
 // 当前订阅的合约编码的列表。
@@ -30,7 +30,7 @@ extern CtpMdSpi* PMDSPI;
 extern TThostFtdcVolumeType MAXCOUNT;
 
 // 判断是不是乌龙指的阈值
-extern int THRESHOLD;
+extern double THRESHOLD;
 
 //互斥量，用来异步的访问当前传过来的数据。因为可能会存在多个线程同时处理一个指针的时候。
 extern pthread_mutex_t MUTEX;

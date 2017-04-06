@@ -1,8 +1,5 @@
 #include "mdspi.h"
-#include <iostream>
-#include <vector>
-#include <stdlib.h>
-#include <string.h>
+
 
 using namespace std;
 
@@ -86,18 +83,24 @@ void CtpMdSpi::OnRtnDepthMarketData(
 {
   //pthread_mutex_lock(&MUTEX);
   //将接受到的数据保存在对象里面，方便其他线程以后的读取。
-  /*
+  //cout<<"the is called"<<endl;
+
   setDPMarketDataField(pDepthMarketData);
   string InstrumentID = pDepthMarketData->InstrumentID;
 
+   cout<<InstrumentID<<endl;
+
   if(PTHREADCONDS.find(InstrumentID) != PTHREADCONDS.end()){
+
     //根据获取到的数据的合约编码，发送信号，去唤醒相应的线程去处理数据。
     pthread_cond_signal(&PTHREADCONDS[InstrumentID]);
   }
   else{
-    cout<<"the InstrumentID "<<InstrumentID<<" is not found "<<endl;
+    //说明处理此合约编码的数据还没有建立，需要建立线程
+    cout<<"the thread to caculate "<<InstrumentID<<" is not installed "<<endl;
   }
-  */
+
+/*
    TThostFtdcInstrumentIDType tmp ="au1706";
   if(strcmp(pDepthMarketData->InstrumentID,tmp)==0){
      cout<<1<<endl;
@@ -105,6 +108,7 @@ void CtpMdSpi::OnRtnDepthMarketData(
    else{
      cout<<2<<endl;
    }
+   */
  //pthread_mutex_unlock(&MUTEX);
   /*
 

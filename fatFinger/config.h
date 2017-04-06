@@ -23,15 +23,15 @@ int requestId=0;
 TThostFtdcVolumeType MAXCOUNT = 1;
 
 // 判断是不是乌龙指的阈值
-int THRESHOLD=10;
+double THRESHOLD=10;
 
 
 // 前置地址 7*24
-char MDFRONT[]   ="tcp://180.168.146.187:10031";
-char TRADEFRONT[]="tcp://180.168.146.187:10030";
+//char MDFRONT[]   ="tcp://180.168.146.187:10031";
+//char TRADEFRONT[]="tcp://180.168.146.187:10030";
 
-//char MDFRONT[]   ="tcp://180.168.146.187:10010";
-//char TRADEFRONT[]="tcp://180.168.146.187:10000";
+char MDFRONT[]   ="tcp://180.168.146.187:10010";
+char TRADEFRONT[]="tcp://180.168.146.187:10000";
 
 //所采用的账号和密码
 TThostFtdcBrokerIDType   APPID= "9999";
@@ -39,7 +39,7 @@ TThostFtdcUserIDType	 USERID = "068674";
 TThostFtdcPasswordType   PASSWD = "19930208";
 
 //订阅的行情列表
-char *PPINSTRUMENTID[] = {"au1712","au1706"};
+char *PPINSTRUMENTID[] = {"au1706","au1712"};
 int NUMOFINSTRUMENTID = 2;
 
 //互斥量，用来异步的访问当前传过来的数据。因为可能会存在多个线程同时处理一个指针的时候。

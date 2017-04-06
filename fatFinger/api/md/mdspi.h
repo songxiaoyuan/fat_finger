@@ -4,12 +4,19 @@
 #include "api/trade/public/ThostFtdcMdApi.h"
 #include <unordered_map>
 #include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <iostream>
+#include <string.h>
+#include <vector>
 
 using namespace std;
 
 extern int requestId;
 extern pthread_mutex_t MUTEX;
 extern unordered_map<string,pthread_cond_t> PTHREADCONDS;
+
 
 class CtpMdSpi : public CThostFtdcMdSpi
 {

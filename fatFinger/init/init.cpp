@@ -12,6 +12,7 @@ void initApiAndSpi(){
 	pTraderApi->RegisterFront(TRADEFRONT);	// 注册交易前置地址
 	pTraderApi->Init();
 	PTRADERSPI = pTraderSpi;
+	PTRADERAPI = pTraderApi;
 
 	//初始化MDApi
 	CThostFtdcMdApi* pMdApi=CThostFtdcMdApi::CreateFtdcMdApi();
@@ -20,6 +21,7 @@ void initApiAndSpi(){
 	pMdApi->RegisterFront(MDFRONT);        // 注册行情前置地址
 	pMdApi->Init();      //接口线程启动, 开始工作
 	PMDSPI = pMdSpi;
+	PMDAPI = pMdApi;
 }
 
 void userLogin(){
@@ -39,4 +41,14 @@ void userSubscribe(){
 	// 开始订阅信息，程序接受数据，并且处理数据。
 	cout<<"MD用户开始订阅合约"<<endl;
 	PMDSPI->SubscribeMarketData(PPINSTRUMENTID,NUMOFINSTRUMENTID);
+}
+
+void printOrders(){
+	//用户打印自己的所有的订单
+	PTRADERSPI->PrintOrders();
+}
+
+void printTrades(){
+	// 用户打印自己的所有的成交订单
+	PTRADERSPI->PrintTrades();
 }

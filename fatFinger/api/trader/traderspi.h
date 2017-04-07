@@ -79,6 +79,9 @@ public:
 	///报单录入请求
    void ReqOrderInsert(TThostFtdcInstrumentIDType instId,
         TThostFtdcDirectionType dir,TThostFtdcPriceType price,   TThostFtdcVolumeType vol);
+        ///报单直接以市场价成交
+   void ReqOrderInsertTake(TThostFtdcInstrumentIDType instId,
+    TThostFtdcDirectionType dir, TThostFtdcVolumeType vol);
 	///报单操作请求
 	void ReqOrderAction(TThostFtdcSequenceNoType orderSeq);
 

@@ -9,9 +9,10 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <iconv.h>
 using namespace std;
 
 void basicPrint(char error[]);
 
-
+string ConvertGb18030ToUtf8(char message[]);
 #endif // BASICFUN_H

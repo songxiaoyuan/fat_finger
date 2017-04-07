@@ -28,12 +28,23 @@ void CtpMdSpi::OnFrontConnected()
 
 void CtpMdSpi::setDPMarketDataField(CThostFtdcDepthMarketDataField *pDepthMarketData){
   pthread_mutex_lock(&MUTEX);
-  pCurrentDepthMarketData = pDepthMarketData;
+  string InstrumentID = pDepthMarketData->InstrumentID;
+  mapPCurrentDepthMarketData[InstrumentID]=pDepthMarketData;
+  //pCurrentDepthMarketData = pDepthMarketData;
   pthread_mutex_unlock(&MUTEX);
 }
 
-CThostFtdcDepthMarketDataField* CtpMdSpi::getDPMarketDataField(){
-  return pCurrentDepthMarketData;
+CThostFtdcDepthMarketDataField* CtpMdSpi::getDPMarketDataField(TThostFtdcInstrumentIDType InstrumentID){
+  string tmpID = InstrumentID;
+  if(mapPCurrentDepthMarketData.find(InstrumentID) != mapPCurrentDepthMarketData.end()){
+    cout<<"the instrument is fount"<<endl;
+    return mapPCurrentDepthMarketData[InstrumentID];
+  }
+  else{
+  cout <<"return hte null"<<endl;
+    return NULL;
+  }
+  //return pCurrentDepthMarketData;
 }
 
 void CtpMdSpi::ReqUserLogin(TThostFtdcBrokerIDType	APPID,
@@ -93,11 +104,29 @@ void CtpMdSpi::OnRtnDepthMarketData(
   if(PTHREADCONDS.find(InstrumentID) != PTHREADCONDS.end()){
 
     //根据获取到的数据的合约编码，发送信号，去唤醒相应的线程去处理数据。
+    cout<<"md has send the signal"<<endl;
     pthread_cond_signal(&PTHREADCONDS[InstrumentID]);
   }
   else{
     //说明处理此合约编码的数据还没有建立，需要建立线程
-    cout<<"the thread to caculate "<<InstrumentID<<" is not installed "<<endl;
+    PTHREADCONDS[InstrumentID] = PTHREAD_COND_INITIALIZER;
+    pthread_t threadTmp;
+    threadArgument arg;
+    arg.cond = &PTHREADCONDS[InstrumentID];
+    arg.pDepthMarketData = pDepthMarketData;
+    int isCreate= pthread_create(&threadTmp,NULL,createThreadFun,(void *)&arg);
+    if(!isCreate){
+      cout<<"the thread to caculate "<<InstrumentID<<" is installed "<<endl;
+    }
+    else{
+      //创建线程没有成功，下次重新创建。
+      unordered_map<string,pthread_cond_t>::iterator iter;
+      iter = PTHREADCONDS.find(InstrumentID);
+      if(iter !=  PTHREADCONDS.end()){
+        PTHREADCONDS.erase(iter);
+      }
+    }
+
   }
 
 /*

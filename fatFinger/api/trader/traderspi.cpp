@@ -190,6 +190,39 @@ void CtpTraderSpi::ReqOrderInsert(TThostFtdcInstrumentIDType instId,
 	cerr<<" 请求 | 发送报单..."<<((ret == 0)?"成功":"失败")<< endl;
 }
 
+
+void CtpTraderSpi::ReqOrderInsertTake(TThostFtdcInstrumentIDType instId,
+    TThostFtdcDirectionType dir, TThostFtdcVolumeType vol)
+{
+	CThostFtdcInputOrderField req;
+	memset(&req, 0, sizeof(req));
+	strcpy(req.BrokerID, APPID);  //应用单元代码
+	strcpy(req.InvestorID, USERID); //投资者代码
+	strcpy(req.InstrumentID, instId); //合约代码
+	strcpy(req.OrderRef, orderRef);  //报单引用
+  int nextOrderRef = atoi(orderRef);
+  sprintf(orderRef, "%d", ++nextOrderRef);
+
+	  req.OrderPriceType = THOST_FTDC_OPT_AnyPrice;//价格类型=市价
+	  req.TimeCondition = THOST_FTDC_TC_IOC;//有效期类型:立即完成，否则撤销
+  req.Direction = MapDirection(dir,true);  //买卖方向
+	//req.CombOffsetFlag[0] = MapOffset(kpp[0],true); //组合开平标志:开仓
+	req.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
+	req.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;	  //组合投机套保标志
+	req.VolumeTotalOriginal = vol;	///数量
+	req.VolumeCondition = THOST_FTDC_VC_AV; //成交量类型:任何数量
+	req.MinVolume = 1;	//最小成交量:1
+	req.ContingentCondition = THOST_FTDC_CC_Immediately;  //触发条件:立即
+
+  //TThostFtdcPriceType	StopPrice;  //止损价
+	req.ForceCloseReason = THOST_FTDC_FCC_NotForceClose;	//强平原因:非强平
+	req.IsAutoSuspend = 0;  //自动挂起标志:否
+	req.UserForceClose = 0;   //用户强评标志:否
+
+	int ret = pUserApi->ReqOrderInsert(&req, ++requestId);
+	cerr<<" 请求 | 发送报单..."<<((ret == 0)?"成功":"失败")<< endl;
+}
+
 void CtpTraderSpi::OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder,
           CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
@@ -254,13 +287,17 @@ bool CtpTraderSpi::CheckToLock(TThostFtdcInstrumentIDType InstrumentID){
   else if (sell>buy){
     //表示卖的比买的多，所以还是需要锁仓的，需要在买差值。
     //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
-    ReqOrderInsert(InstrumentID,THOST_FTDC_D_Buy,0,sell-buy);
+    cout<<"调用锁仓函数"<<endl;
+    TThostFtdcVolumeType num = sell-buy;
+    ReqOrderInsertTake(InstrumentID,THOST_FTDC_D_Buy,num);
     return false;
   }
   else{
     //表示买的比卖的多，所以还是需要锁仓的，需要卖差值。
     //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
-    ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,0,buy-sell);
+    cout<<"调用锁仓函数"<<endl;
+    TThostFtdcVolumeType num =buy -sell;
+    ReqOrderInsertTake(InstrumentID,THOST_FTDC_D_Sell,num);
     return false;
   }
 }
@@ -294,7 +331,7 @@ void CtpTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder)
   pthread_t tmp = pthread_self();
   cerr<<" 回报 | 报单已提交...序号:"<<order->BrokerOrderSeq<< " the thread is "<<tmp<<endl;
   //cerr<<" 回报 | 报单的状态是...序号:"<<order->StatusMsg<< " the thread is "<<tmp<<endl;
-  //basicPrint(order->StatusMsg);
+  basicPrint(order->StatusMsg);
 }
 
 ///成交通知
@@ -358,21 +395,30 @@ bool CtpTraderSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)
 
 void CtpTraderSpi::PrintOrders(){
   CThostFtdcOrderField* pOrder;
-  for(unsigned int i=0; i<orderList.size(); i++){
-    pOrder = orderList[i];
-    cerr<<" 报单 | 合约:"<<pOrder->InstrumentID
+  unordered_map<string,vector<CThostFtdcOrderField*>>::iterator iter;
+  for(iter = orderMapVector.begin();iter!=orderMapVector.end();iter++){
+    vector<CThostFtdcOrderField*> orderList = iter->second;
+    for(unsigned int i=0; i<orderList.size(); i++){
+      pOrder = orderList[i];
+     cerr<<" 报单 | 合约:"<<pOrder->InstrumentID
       <<" 方向:"<<MapDirection(pOrder->Direction,false)
       <<" 开平:"<<MapOffset(pOrder->CombOffsetFlag[0],false)
       <<" 价格:"<<pOrder->LimitPrice
       <<" 数量:"<<pOrder->VolumeTotalOriginal
       <<" 序号:"<<pOrder->BrokerOrderSeq
       <<" 报单编号:"<<pOrder->OrderSysID
-      <<" 状态:"<<pOrder->StatusMsg<<endl;
+      <<" 状态:"<<ConvertGb18030ToUtf8(pOrder->StatusMsg)<<endl;
+      //<<" 状态:"<<pOrder->OrderStatus<<endl;
+     // ConvertGb18030ToUtf8(pOrder->StatusMsg);
+  }
   }
 }
 void CtpTraderSpi::PrintTrades(){
   CThostFtdcTradeField* pTrade;
-  for(unsigned int i=0; i<tradeList.size(); i++){
+  unordered_map<string,vector<CThostFtdcTradeField*>>::iterator iter;
+  for(iter = tradeMapVector.begin();iter!=tradeMapVector.end();iter++){
+   vector<CThostFtdcTradeField*> tradeList = iter->second;
+       for(unsigned int i=0; i<tradeList.size(); i++){
     pTrade = tradeList[i];
     cerr<<" 成交 | 合约:"<< pTrade->InstrumentID
       <<" 方向:"<<MapDirection(pTrade->Direction,false)
@@ -381,6 +427,7 @@ void CtpTraderSpi::PrintTrades(){
       <<" 数量:"<<pTrade->Volume
       <<" 报单编号:"<<pTrade->OrderSysID
       <<" 成交编号:"<<pTrade->TradeID<<endl;
+  }
   }
 }
 char MapDirection(char src, bool toOrig=true){

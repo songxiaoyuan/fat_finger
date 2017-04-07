@@ -12,6 +12,10 @@ extern char TRADEFRONT[];
 extern CtpTraderSpi* PTRADERSPI;
 extern CtpMdSpi* PMDSPI;
 
+//初始化环境的trader api 和ｍｄ spi
+extern CThostFtdcTraderApi* PTRADERAPI;
+extern CThostFtdcMdApi* PMDAPI;
+
 //用户登录需要的信息。
 extern TThostFtdcBrokerIDType   APPID;
 extern TThostFtdcUserIDType	 USERID;
@@ -32,6 +36,13 @@ void userLogin();
 
 //用户通过MD开始订阅信息，此时程序变回自动进行，通过md传回来的数据，判断是不是乌龙指，如果是的话，自动下单。
 void userSubscribe();
+
+//用户打印现在所有讯在的报单。
+void printOrders();
+
+
+//用户打印现在所有的成交的单子。
+void printTrades();
 
 
 

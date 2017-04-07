@@ -19,6 +19,11 @@ extern int requestId;
 extern pthread_mutex_t MUTEX;
 extern unordered_map<string,pthread_cond_t> PTHREADCONDS;
 
+struct threadArgument{
+  pthread_cond_t *cond;
+  CThostFtdcDepthMarketDataField *pDepthMarketData;
+};
+
 //extern void *createThreadFun(void *cond);
 class CtpMdSpi : public CThostFtdcMdSpi
 {
@@ -61,12 +66,15 @@ public:
 	        TThostFtdcUserIDType	userId,	TThostFtdcPasswordType	passwd);
 	void SubscribeMarketData(char* instIdList[],int len);
 	bool IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo);
+	//用来设置当前接受的数据，然后供处理数据线程去做处理
 	void setDPMarketDataField(CThostFtdcDepthMarketDataField *pDepthMarketData);
-	CThostFtdcDepthMarketDataField* getDPMarketDataField();
+	//用来获取得到的特定的合约编码的数据，然后供处理数据线程去处理
+	CThostFtdcDepthMarketDataField* getDPMarketDataField(TThostFtdcInstrumentIDType InstrumentID);
 
 private:
   CThostFtdcMdApi* pUserApi;
-  CThostFtdcDepthMarketDataField *pCurrentDepthMarketData;
+  unordered_map<string,CThostFtdcDepthMarketDataField*> mapPCurrentDepthMarketData;
+  //CThostFtdcDepthMarketDataField *pCurrentDepthMarketData;
 };
 
 #endif

@@ -399,6 +399,8 @@ void CtpTraderSpi::PrintOrders(){
     vector<CThostFtdcOrderField*> orderList = iter->second;
     for(unsigned int i=0; i<orderList.size(); i++){
       pOrder = orderList[i];
+      TThostFtdcErrorMsgType error ="0";
+      strcpy(error,pOrder->StatusMsg);
      cerr<<" 报单 | 合约:"<<pOrder->InstrumentID
       <<" 方向:"<<MapDirection(pOrder->Direction,false)
       <<" 开平:"<<MapOffset(pOrder->CombOffsetFlag[0],false)
@@ -406,8 +408,9 @@ void CtpTraderSpi::PrintOrders(){
       <<" 数量:"<<pOrder->VolumeTotalOriginal
       <<" 序号:"<<pOrder->BrokerOrderSeq
       <<" 报单编号:"<<pOrder->OrderSysID
-      <<" 状态:"<<ConvertGb18030ToUtf8(pOrder->StatusMsg)<<endl;
+      <<" 状态:"<<ConvertGb18030ToUtf8(error)<<endl;
       //<<" 状态:"<<pOrder->OrderStatus<<endl;
+      //<<" 状态:"<<pOrder->StatusMsg<<endl;
      // ConvertGb18030ToUtf8(pOrder->StatusMsg);
   }
   }

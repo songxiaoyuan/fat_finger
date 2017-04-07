@@ -39,7 +39,7 @@ return iconv(cd,pin,(size_t *)&inlen,pout,(size_t *)&outlen);
 }
 };
 
-
+/* this is ok!!
 //将输出信息从gb18030转换成ｕｆｔ８,方便在Ｌｉｎｕｘ终端显示。
 string ConvertGb18030ToUtf8(char message[]){
  int OUTLEN = 255;
@@ -52,3 +52,43 @@ string ConvertGb18030ToUtf8(char message[]){
 
 return outbuf;
 }
+*/
+/*
+//将输出信息从gb18030转换成ｕｆｔ８,方便在Ｌｉｎｕｘ终端显示。
+string ConvertGb18030ToUtf8(char message[]){
+ int OUTLEN = 255;
+  //char *in_utf8 = message;
+ char *in_gb2312 = message;
+ char outbuf[OUTLEN];
+
+ CodeConverter cc2 = CodeConverter("gb2312","utf-8");
+ cc2.convert(in_gb2312,strlen(in_gb2312),outbuf,OUTLEN);
+
+return outbuf;
+}
+*/
+
+
+string ConvertGb18030ToUtf8(char message[]){
+ int OUTLEN = 255;
+  //char *in_utf8 = message;
+ char *in_gb2312 = message;
+ char outbuf[OUTLEN];
+ convert(message,strlen(message),outbuf,OUTLEN);
+ string tmp = outbuf;
+ return tmp;
+}
+
+
+
+//将输出信息从gb18030转换成ｕｆｔ８,方便在Ｌｉｎｕｘ终端显示。
+void convert(char *inbuf,int inlen,char *outbuf,int outlen){
+ iconv_t cd = iconv_open("utf-8","gb18030");
+ char **pin = &inbuf;
+ char **pout = &outbuf;
+
+  memset(outbuf,0,outlen);
+  iconv(cd,pin,(size_t *)&inlen,pout,(size_t *)&outlen);
+ iconv_close(cd);
+}
+

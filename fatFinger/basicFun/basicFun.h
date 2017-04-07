@@ -14,5 +14,6 @@ using namespace std;
 
 void basicPrint(char error[]);
 
+void convert(char *inbuf,int inlen,char *outbuf,int outlen);
 string ConvertGb18030ToUtf8(char message[]);
 #endif // BASICFUN_H

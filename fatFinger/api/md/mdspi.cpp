@@ -37,11 +37,9 @@ void CtpMdSpi::setDPMarketDataField(CThostFtdcDepthMarketDataField *pDepthMarket
 CThostFtdcDepthMarketDataField* CtpMdSpi::getDPMarketDataField(TThostFtdcInstrumentIDType InstrumentID){
   string tmpID = InstrumentID;
   if(mapPCurrentDepthMarketData.find(InstrumentID) != mapPCurrentDepthMarketData.end()){
-    cout<<"the instrument is fount"<<endl;
     return mapPCurrentDepthMarketData[InstrumentID];
   }
   else{
-  cout <<"return hte null"<<endl;
     return NULL;
   }
   //return pCurrentDepthMarketData;
@@ -104,21 +102,17 @@ void CtpMdSpi::OnRtnDepthMarketData(
   if(PTHREADCONDS.find(InstrumentID) != PTHREADCONDS.end()){
 
     //根据获取到的数据的合约编码，发送信号，去唤醒相应的线程去处理数据。
-    cout<<"md has send the signal"<<endl;
     pthread_cond_signal(&PTHREADCONDS[InstrumentID]);
   }
   else{
     //说明处理此合约编码的数据还没有建立，需要建立线程
     PTHREADCONDS[InstrumentID] = PTHREAD_COND_INITIALIZER;
-    pthread_t threadTmp;
-    threadArgument arg;
-    arg.cond = &PTHREADCONDS[InstrumentID];
-    arg.pDepthMarketData = pDepthMarketData;
-    int isCreate= pthread_create(&threadTmp,NULL,createThreadFun,(void *)&arg);
-    if(!isCreate){
-      cout<<"the thread to caculate "<<InstrumentID<<" is installed "<<endl;
-    }
-    else{
+    createThread *ct = new createThread(&PTHREADCONDS[InstrumentID],pDepthMarketData);
+    //cout<<"the address of ct is "<<ct<<endl;
+    int start = ct->start();
+    //cout<<"starting the thread"<<endl;
+    if (!start){
+      cout<<"the thread is not installed"<<endl;
       //创建线程没有成功，下次重新创建。
       unordered_map<string,pthread_cond_t>::iterator iter;
       iter = PTHREADCONDS.find(InstrumentID);
@@ -126,7 +120,6 @@ void CtpMdSpi::OnRtnDepthMarketData(
         PTHREADCONDS.erase(iter);
       }
     }
-
   }
 
 /*

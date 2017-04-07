@@ -19,10 +19,10 @@ extern int requestId;
 extern pthread_mutex_t MUTEX;
 extern unordered_map<string,pthread_cond_t> PTHREADCONDS;
 
-struct threadArgument{
-  pthread_cond_t *cond;
-  CThostFtdcDepthMarketDataField *pDepthMarketData;
-};
+// struct threadArgument{
+//   pthread_cond_t *cond;
+//   CThostFtdcDepthMarketDataField *pDepthMarketData;
+// };
 
 //extern void *createThreadFun(void *cond);
 class CtpMdSpi : public CThostFtdcMdSpi

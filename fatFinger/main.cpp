@@ -15,6 +15,16 @@ int main(int argc, const char* argv[]){
   //test_md();
   // test_trader();
   //初始化环境，建立md和trader的API和spi
+  unordered_map<string,vector<int>> tmp;
+  //tmp["abc"] = vector<int> a;
+  tmp["abc"].push_back(1);
+  vector<int> tmpV = tmp["abc"];
+  tmpV.push_back(2);
+  tmp["abc"].push_back(3);
+  for(int i=0;i<tmp["abc"].size();i++){
+    cout<<tmp["abc"][i]<<endl;
+  }
+
   int i;
   initApiAndSpi();
    cerr<<"-----------------------------------------------"<<endl;

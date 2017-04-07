@@ -52,6 +52,7 @@
 		<Unit filename="api/trader/traderspi.h" />
 		<Unit filename="basicFun/basicFun.cpp" />
 		<Unit filename="basicFun/basicFun.h" />
+		<Unit filename="config.h" />
 		<Unit filename="createThread/createThread.cpp" />
 		<Unit filename="createThread/createThread.h" />
 		<Unit filename="init/init.cpp" />

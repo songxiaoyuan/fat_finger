@@ -3,6 +3,17 @@
 #pragma once
 
 #include "api/trade/public/ThostFtdcTraderApi.h"
+#include "basicFun/basicFun.h"
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <pthread.h>
+#include <vector>
+#include <unordered_map>
+#include <set>
+
+using namespace std;
 
 extern TThostFtdcBrokerIDType APPID;		// 应用单元
 extern TThostFtdcUserIDType USERID;		// 投资者代码
@@ -34,7 +45,7 @@ public:
 	virtual void OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
 	///报单操作请求响应
-	virtual void OnRspOrderActio判断等待n(CThostFtdcInputOrderActionField *pInputOrderAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+	virtual void OnRspOrderAction(CThostFtdcInputOrderActionField *pInputOrderAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
 	///错误应答
 	virtual void OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
@@ -71,14 +82,27 @@ public:
 	///报单操作请求
 	void ReqOrderAction(TThostFtdcSequenceNoType orderSeq);
 
-	// 是否收到成功的响应
+	/// 是否收到成功的响应
 	bool IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo);
+
+	///判断当前的仓位是不是还需要锁仓，如果需要的话，同时调用锁仓函数。
+	bool CheckToLock(TThostFtdcInstrumentIDType InstrumentID);
 
   void PrintOrders();
   void PrintTrades();
 
 private:
   CThostFtdcTraderApi* pUserApi;
+  // 会话参数
+  int	 frontId;	//前置编号
+  int	 sessionId;	//会话编号
+  char orderRef[13];
+
+  unordered_map<string,vector<CThostFtdcOrderField*>> orderMapVector;
+  unordered_map<string,vector<CThostFtdcTradeField*>> tradeMapVector;
+
+  vector<CThostFtdcOrderField*> orderList;
+  vector<CThostFtdcTradeField*> tradeList;
 
 };
 

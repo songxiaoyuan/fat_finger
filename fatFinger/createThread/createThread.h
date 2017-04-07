@@ -12,6 +12,7 @@
 #include <unordered_map>
 using namespace std;
 
+class CtpMdSpi;
 // 当前订阅的合约编码的列表。
 extern char *PPINSTRUMENTID[];
 
@@ -24,6 +25,7 @@ extern unordered_map<string,pthread_cond_t> PTHREADCONDS;
 
 //程序运行时的trader的spi和md的spi。
 extern CtpTraderSpi* PTRADERSPI;
+
 extern CtpMdSpi* PMDSPI;
 
 // 遇到乌龙指的时候，每一个tick交易量
@@ -31,6 +33,8 @@ extern TThostFtdcVolumeType MAXCOUNT;
 
 // 判断是不是乌龙指的阈值
 extern double THRESHOLD;
+// 判断是不是回归正常的阈值
+extern double NORMALTHRESHOLD;
 
 //互斥量，用来异步的访问当前传过来的数据。因为可能会存在多个线程同时处理一个指针的时候。
 extern pthread_mutex_t MUTEX;

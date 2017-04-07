@@ -2,6 +2,7 @@
 #define MD_SPI_H_
 //#pragma once
 #include "api/trade/public/ThostFtdcMdApi.h"
+#include "createThread/createThread.h"
 #include <unordered_map>
 #include <pthread.h>
 #include <stdio.h>
@@ -10,6 +11,7 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -17,7 +19,7 @@ extern int requestId;
 extern pthread_mutex_t MUTEX;
 extern unordered_map<string,pthread_cond_t> PTHREADCONDS;
 
-
+//extern void *createThreadFun(void *cond);
 class CtpMdSpi : public CThostFtdcMdSpi
 {
 public:

@@ -1,32 +1,12 @@
-#include "api/trade/public/ThostFtdcTraderApi.h"
+
 #include "api/trader/traderspi.h"
-#include "basicFun/basicFun.h"
-#include <iostream>
-#include <vector>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <pthread.h>
-
-using namespace std;
-
-
 
 extern int requestId;
 
-// 会话参数
-int	 frontId;	//前置编号
-int	 sessionId;	//会话编号
-char orderRef[13];
-
-vector<CThostFtdcOrderField*> orderList;
-vector<CThostFtdcTradeField*> tradeList;
 
 char MapDirection(char src, bool toOrig);
 char MapOffset(char src, bool toOrig);
 
-TThostFtdcDateType confirmDate="20170331";
-TThostFtdcTimeType confirmTime ="10:44";
 
 void CtpTraderSpi::OnFrontConnected()
 {
@@ -254,21 +234,67 @@ void CtpTraderSpi::OnRspOrderAction(
   }
 }
 
+bool CtpTraderSpi::CheckToLock(TThostFtdcInstrumentIDType InstrumentID){
+  string tmpId = InstrumentID;
+  vector<CThostFtdcTradeField*> tradeVector = tradeMapVector[tmpId];
+  int sell = 0;
+  int buy = 0;
+  for(int i=0;i<tradeVector.size();i++){
+    if(tradeVector[i]->Direction ==THOST_FTDC_D_Buy && tradeVector[i]->OffsetFlag ==THOST_FTDC_OF_Open){
+      buy = buy+tradeVector[i]->Volume;
+    }
+    else if(tradeVector[i]->Direction ==THOST_FTDC_D_Sell && tradeVector[i]->OffsetFlag ==THOST_FTDC_OF_Open){
+      sell = sell+tradeVector[i]->Volume;
+    }
+  }
+  if (sell ==buy){
+    //表示已经锁仓了，已经不需要锁仓了。
+    return true;
+  }
+  else if (sell>buy){
+    //表示卖的比买的多，所以还是需要锁仓的，需要在买差值。
+    //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
+    ReqOrderInsert(InstrumentID,THOST_FTDC_D_Buy,0,sell-buy);
+    return false;
+  }
+  else{
+    //表示买的比卖的多，所以还是需要锁仓的，需要卖差值。
+    //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
+    ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,0,buy-sell);
+    return false;
+  }
+}
+
 ///报单回报
 void CtpTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder)
 {
   CThostFtdcOrderField* order = new CThostFtdcOrderField();
   memcpy(order,  pOrder, sizeof(CThostFtdcOrderField));
-  bool founded=false;    unsigned int i=0;
-  for(i=0; i<orderList.size(); i++){
-    if(orderList[i]->BrokerOrderSeq == order->BrokerOrderSeq) {
-      founded=true;    break;
+  bool founded=false;
+  string instrumentID = order->InstrumentID;
+  if(orderMapVector.find(instrumentID) != orderMapVector.end()){
+    //说明此前有相应的合约编码的报单
+    for(unsigned int i=0;i<orderMapVector[instrumentID].size();i++){
+      if(orderMapVector[instrumentID][i]->BrokerOrderSeq == order->BrokerOrderSeq){
+        CThostFtdcOrderField* tmp = orderMapVector[instrumentID][i];
+        orderMapVector[instrumentID][i] = order;
+        delete tmp;
+        founded = true;
+        break;
+      }
+    }
+    if(!founded){
+      orderMapVector[instrumentID].push_back(order);
     }
   }
-  if(founded) orderList[i]= order;
-  else  orderList.push_back(order);
+  else{
+    //第一次发现此合约编码类型的合约
+    orderMapVector[instrumentID].push_back(order);
+  }
   pthread_t tmp = pthread_self();
   cerr<<" 回报 | 报单已提交...序号:"<<order->BrokerOrderSeq<< " the thread is "<<tmp<<endl;
+  //cerr<<" 回报 | 报单的状态是...序号:"<<order->StatusMsg<< " the thread is "<<tmp<<endl;
+  //basicPrint(order->StatusMsg);
 }
 
 ///成交通知
@@ -276,14 +302,27 @@ void CtpTraderSpi::OnRtnTrade(CThostFtdcTradeField *pTrade)
 {
   CThostFtdcTradeField* trade = new CThostFtdcTradeField();
   memcpy(trade,  pTrade, sizeof(CThostFtdcTradeField));
-  bool founded=false;     unsigned int i=0;
-  for(i=0; i<tradeList.size(); i++){
-    if(tradeList[i]->TradeID == trade->TradeID) {
-      founded=true;   break;
+  bool founded=false;
+  string instrumentID = trade->InstrumentID;
+  if(tradeMapVector.find(instrumentID) != tradeMapVector.end()){
+    //说明此前有相应的合约编码的合约已经成交
+    for(unsigned int i=0;i<tradeMapVector[instrumentID].size();i++){
+      if(tradeMapVector[instrumentID][i]->BrokerOrderSeq == trade->BrokerOrderSeq){
+        CThostFtdcTradeField* tmp = tradeMapVector[instrumentID][i];
+        tradeMapVector[instrumentID][i] = trade;
+        delete tmp;
+        founded = true;
+        break;
+      }
+    }
+    if(!founded){
+      tradeMapVector[instrumentID].push_back(trade);
     }
   }
-  if(founded) tradeList[i] = trade;
-  else  tradeList.push_back(trade);
+  else{
+    //第一次发现此成交合约编码类型的合约
+    tradeMapVector[instrumentID].push_back(trade);
+  }
   cerr<<" 回报 | 报单已成交...成交编号:"<<trade->TradeID<<endl;
 }
 

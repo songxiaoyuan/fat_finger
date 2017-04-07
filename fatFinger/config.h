@@ -29,7 +29,9 @@ int requestId=0;
 TThostFtdcVolumeType MAXCOUNT = 1;
 
 // 判断是不是乌龙指的阈值
-double THRESHOLD=10;
+double THRESHOLD=0;
+// 判断是不是回归正常的阈值
+double NORMALTHRESHOLD=0;
 
 
 // 前置地址 7*24

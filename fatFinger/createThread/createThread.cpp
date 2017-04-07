@@ -36,10 +36,6 @@ int createThread::threadRun(){
         TThostFtdcPriceType CurrentBidPrice = pCurrentDepthMarketData->BidPrice1;
         TThostFtdcPriceType CurrentAskPrice = pCurrentDepthMarketData->AskPrice1;
         TThostFtdcPriceType CurrentLastPrice = pCurrentDepthMarketData->LastPrice;
-        //cout<<"----------------"<<pCurrentDepthMarketData->InstrumentID<<endl;
-        //cout<<"the current bid price is "<< pCurrentDepthMarketData->BidPrice1<<endl;
-        //cout<<"the pre bid price is "<<pCurrentDepthMarketData->AskPrice1<<endl;
-       // cout<<"++++++++++++++++++++++++++++++++"<<pCurrentDepthMarketData->InstrumentID<<endl;
         pthread_mutex_unlock(&MUTEX);
               //通过接受到的数据，判断是不是乌龙指。
   			  if (CurrentBidPrice >=(BidPrice*(1+THRESHOLD/100))){
@@ -77,7 +73,7 @@ int createThread::threadRun(){
   			  	    LastPrice = CurrentLastPrice;
   			  	    //TODO::此处还是要注意一个锁仓的概念，现在还没有锁仓。
   			  	    //只有锁仓之后，这个发现乌龙指的bool才会false，说明此次乌龙指的处理已经结束。
-  			  	    bool isLocked = PTRADERSPI->CheckToLock(InstrumentID);
+  			  	    bool isLocked = PTRADERSPI->CheckToLock(InstrumentID,LastPrice);
   			  	    if(isLocked){
   			  	      //已经锁仓完毕，此次乌龙指处理结束。
   			  	      FindFatFinger = true;
@@ -92,7 +88,7 @@ int createThread::threadRun(){
                 }
   			  }
 
-        cout<<"the thread "<<InstrumentID<<" is called  once "<<tmp<<endl;
+       // cout<<"the thread "<<InstrumentID<<" is called  once "<<tmp<<endl;
     }
 }
 

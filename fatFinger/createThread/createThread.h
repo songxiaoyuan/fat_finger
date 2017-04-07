@@ -44,7 +44,7 @@ class createThread
         TThostFtdcPriceType AskPrice;
         TThostFtdcPriceType LastPrice;
         TThostFtdcInstrumentIDType InstrumentID;
-        bool FindFatFinger = false;
+        bool FindFatFinger = true;
         pthread_cond_t *cond;
         CThostFtdcDepthMarketDataField *pInitDepthMarketData;
         pthread_t pid;

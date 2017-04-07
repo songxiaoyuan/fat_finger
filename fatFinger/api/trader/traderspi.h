@@ -89,7 +89,7 @@ public:
 	bool IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo);
 
 	///判断当前的仓位是不是还需要锁仓，如果需要的话，同时调用锁仓函数。
-	bool CheckToLock(TThostFtdcInstrumentIDType InstrumentID);
+	bool CheckToLock(TThostFtdcInstrumentIDType InstrumentID, TThostFtdcPriceType lastPrice);
 
   void PrintOrders();
   void PrintTrades();

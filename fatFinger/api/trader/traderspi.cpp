@@ -204,7 +204,7 @@ void CtpTraderSpi::ReqOrderInsertTake(TThostFtdcInstrumentIDType instId,
   sprintf(orderRef, "%d", ++nextOrderRef);
 
 	  req.OrderPriceType = THOST_FTDC_OPT_AnyPrice;//价格类型=市价
-	  req.TimeCondition = THOST_FTDC_TC_IOC;//有效期类型:立即完成，否则撤销
+	  //req.TimeCondition = THOST_FTDC_TC_IOC;//有效期类型:立即完成，否则撤销
   req.Direction = MapDirection(dir,true);  //买卖方向
 	//req.CombOffsetFlag[0] = MapOffset(kpp[0],true); //组合开平标志:开仓
 	req.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
@@ -267,7 +267,7 @@ void CtpTraderSpi::OnRspOrderAction(
   }
 }
 
-bool CtpTraderSpi::CheckToLock(TThostFtdcInstrumentIDType InstrumentID){
+bool CtpTraderSpi::CheckToLock(TThostFtdcInstrumentIDType InstrumentID,TThostFtdcPriceType lastPrice){
   string tmpId = InstrumentID;
   vector<CThostFtdcTradeField*> tradeVector = tradeMapVector[tmpId];
   int sell = 0;
@@ -289,7 +289,7 @@ bool CtpTraderSpi::CheckToLock(TThostFtdcInstrumentIDType InstrumentID){
     //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
     cout<<"调用锁仓函数"<<endl;
     TThostFtdcVolumeType num = sell-buy;
-    ReqOrderInsertTake(InstrumentID,THOST_FTDC_D_Buy,num);
+    ReqOrderInsert(InstrumentID,THOST_FTDC_D_Buy,lastPrice,num);
     return false;
   }
   else{
@@ -378,7 +378,6 @@ void CtpTraderSpi::OnHeartBeatWarning(int nTimeLapse)
 
 void CtpTraderSpi::OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-    cout<<"this OnRspError is called"<<endl;
 	IsErrorRspInfo(pRspInfo);
 }
 
@@ -388,7 +387,7 @@ bool CtpTraderSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)
 	bool ret = ((pRspInfo) && (pRspInfo->ErrorID != 0));
   if (ret){
     basicPrint(pRspInfo->ErrorMsg);
-    cerr<<" 响应 错误信息 | "<<pRspInfo->ErrorMsg<<endl;
+    cerr<<" 响应 错误信息 | "<<ConvertGb18030ToUtf8( pRspInfo->ErrorMsg)<<endl;
   }
 	return ret;
 }

@@ -90,14 +90,11 @@ void CtpMdSpi::OnRspUnSubMarketData(
 void CtpMdSpi::OnRtnDepthMarketData(
              CThostFtdcDepthMarketDataField *pDepthMarketData)
 {
-  //pthread_mutex_lock(&MUTEX);
   //将接受到的数据保存在对象里面，方便其他线程以后的读取。
-  //cout<<"the is called"<<endl;
-
   setDPMarketDataField(pDepthMarketData);
   string InstrumentID = pDepthMarketData->InstrumentID;
 
-   cout<<InstrumentID<<endl;
+  cout<<InstrumentID<<endl;
 
   if(PTHREADCONDS.find(InstrumentID) != PTHREADCONDS.end()){
 

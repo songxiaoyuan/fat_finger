@@ -1,12 +1,13 @@
 #include "basicFun.h"
 
-void basicPrint(char error[]){
+void basicPrint(string error){
     //cout<<"this basicPrint is called"<<endl;
     char *filePath = "error.txt";
     FILE* file_fd = fopen(filePath,"a");
     //error = "test";
     char *huiche = "\n";
-    int writeLen = fwrite(error,1,strlen(error),file_fd);
+    const char *data = error.data();
+    int writeLen = fwrite(data,1,strlen(data),file_fd);
     int writeLen1 = fwrite(huiche,1,1,file_fd);
     fclose(file_fd);
 }
@@ -75,7 +76,7 @@ string ConvertGb18030ToUtf8(char message[]){
  char *in_gb2312 = message;
  char outbuf[OUTLEN];
  convert(message,strlen(message),outbuf,OUTLEN);
- string tmp = outbuf;
+ string tmp= outbuf;
  return tmp;
 }
 

@@ -270,8 +270,10 @@ void CtpTraderSpi::OnRspOrderAction(
 bool CtpTraderSpi::CheckToLock(TThostFtdcInstrumentIDType InstrumentID,TThostFtdcPriceType lastPrice){
   string tmpId = InstrumentID;
   vector<CThostFtdcTradeField*> tradeVector = tradeMapVector[tmpId];
+  vector<CThostFtdcOrderField*> orderVector = orderMapVector[tmpId];
   int sell = 0;
   int buy = 0;
+  //检查合约编码对应的成交合约的买卖数量。
   for(int i=0;i<tradeVector.size();i++){
     if(tradeVector[i]->Direction ==THOST_FTDC_D_Buy && tradeVector[i]->OffsetFlag ==THOST_FTDC_OF_Open){
       buy = buy+tradeVector[i]->Volume;
@@ -280,6 +282,11 @@ bool CtpTraderSpi::CheckToLock(TThostFtdcInstrumentIDType InstrumentID,TThostFtd
       sell = sell+tradeVector[i]->Volume;
     }
   }
+  //检查已经下单的合约的买卖数量，这里的报单的只是算没有成交的，和没有撤单的。
+　　　for(int i=0;i<orderVector.size();i++){
+    tmp = orderVector[i];
+    if(tmp->OrderStatus != THOST_FTDC_OST_AllTraded && )
+   }
   if (sell ==buy){
     //表示已经锁仓了，已经不需要锁仓了。
     return true;
@@ -297,7 +304,7 @@ bool CtpTraderSpi::CheckToLock(TThostFtdcInstrumentIDType InstrumentID,TThostFtd
     //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
     cout<<"调用锁仓函数"<<endl;
     TThostFtdcVolumeType num =buy -sell;
-    ReqOrderInsertTake(InstrumentID,THOST_FTDC_D_Sell,num);
+    ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,lastPrice,num);
     return false;
   }
 }
@@ -331,7 +338,7 @@ void CtpTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder)
   pthread_t tmp = pthread_self();
   cerr<<" 回报 | 报单已提交...序号:"<<order->BrokerOrderSeq<< " the thread is "<<tmp<<endl;
   //cerr<<" 回报 | 报单的状态是...序号:"<<order->StatusMsg<< " the thread is "<<tmp<<endl;
-  basicPrint(order->StatusMsg);
+  //basicPrint(order->StatusMsg);
 }
 
 ///成交通知
@@ -386,7 +393,7 @@ bool CtpTraderSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)
 	// 如果ErrorID != 0, 说明收到了错误的响应
 	bool ret = ((pRspInfo) && (pRspInfo->ErrorID != 0));
   if (ret){
-    basicPrint(pRspInfo->ErrorMsg);
+    //basicPrint(pRspInfo->ErrorMsg);
     cerr<<" 响应 错误信息 | "<<ConvertGb18030ToUtf8( pRspInfo->ErrorMsg)<<endl;
   }
 	return ret;
@@ -408,7 +415,9 @@ void CtpTraderSpi::PrintOrders(){
       <<" 数量:"<<pOrder->VolumeTotalOriginal
       <<" 序号:"<<pOrder->BrokerOrderSeq
       <<" 报单编号:"<<pOrder->OrderSysID
+      <<" 报单状态编号:"<<pOrder->OrderStatus
       <<" 状态:"<<ConvertGb18030ToUtf8(error)<<endl;
+      //basicPrint(ConvertGb18030ToUtf8(error));
       //<<" 状态:"<<pOrder->OrderStatus<<endl;
       //<<" 状态:"<<pOrder->StatusMsg<<endl;
      // ConvertGb18030ToUtf8(pOrder->StatusMsg);

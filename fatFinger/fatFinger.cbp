@@ -16,6 +16,7 @@
 					<Add directory="../fatFinger" />
 					<Add directory="api/test" />
 					<Add directory="createThead" />
+					<Add directory="createThread" />
 				</Compiler>
 				<Linker>
 					<Add library="/home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/thostmduserapi.so" />
@@ -32,6 +33,7 @@
 					<Add option="-O2" />
 					<Add directory="api/test" />
 					<Add directory="createThead" />
+					<Add directory="createThread" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -55,6 +57,7 @@
 		<Unit filename="config.h" />
 		<Unit filename="createThread/createThread.cpp" />
 		<Unit filename="createThread/createThread.h" />
+		<Unit filename="error.txt" />
 		<Unit filename="init/init.cpp" />
 		<Unit filename="init/init.h" />
 		<Unit filename="main.cpp" />

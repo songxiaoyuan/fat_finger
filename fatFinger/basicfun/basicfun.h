@@ -16,4 +16,7 @@ void basicPrint(string error);
 
 void convert(char *inbuf,int inlen,char *outbuf,int outlen);
 string ConvertGb18030ToUtf8(char message[]);
+
+char MapDirection(char src, bool toOrig);
+char MapOffset(char src, bool toOrig);
 #endif // BASICFUN_H

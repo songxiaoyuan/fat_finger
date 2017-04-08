@@ -1,4 +1,4 @@
-#include "createThread.h"
+#include "createthread.h"
 
 createThread::createThread(pthread_cond_t *cond,CThostFtdcDepthMarketDataField *pDepthMarketData)
 {
@@ -46,7 +46,7 @@ int createThread::threadRun(){
   			  	cout<<"the current bid price is "<<CurrentBidPrice<<endl;
   			  	cout<<"the pre bid price is "<<BidPrice<<endl;
   			  	cout<<"----------------"<<InstrumentID<<endl;
-  			  	PTRADERSPI->ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,CurrentBidPrice,MAXCOUNT);
+                APPLICATION->ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,CurrentBidPrice,MAXCOUNT);
   			  }
   			  else if (CurrentAskPrice <= (AskPrice*(1 - THRESHOLD/100))){
   			    //说明卖一价已经跌停了，所以赶紧开多，就是赶紧买。
@@ -56,7 +56,7 @@ int createThread::threadRun(){
   			  	cout<<"the pre ask price is "<<AskPrice<<endl;
   			  	cout<<"----------------"<<InstrumentID<<endl;
   			  	//说明卖一价跌停，所以赶紧开多,，就是赶紧买
-  			  	PTRADERSPI->ReqOrderInsert(InstrumentID,THOST_FTDC_D_Buy,CurrentBidPrice,MAXCOUNT);
+  			  	APPLICATION->ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,CurrentBidPrice,MAXCOUNT);
   			  }
   			  else{
   			      //说明以前还不是乌龙指
@@ -73,7 +73,7 @@ int createThread::threadRun(){
   			  	    LastPrice = CurrentLastPrice;
   			  	    //TODO::此处还是要注意一个锁仓的概念，现在还没有锁仓。
   			  	    //只有锁仓之后，这个发现乌龙指的bool才会false，说明此次乌龙指的处理已经结束。
-  			  	    bool isLocked = PTRADERSPI->CheckToLock(InstrumentID,LastPrice);
+  			  	    bool isLocked = APPLICATION->CheckToLock(InstrumentID,LastPrice);
   			  	    if(isLocked){
   			  	      //已经锁仓完毕，此次乌龙指处理结束。
   			  	      FindFatFinger = true;

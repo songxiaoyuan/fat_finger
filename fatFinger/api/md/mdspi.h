@@ -2,7 +2,7 @@
 #define MD_SPI_H_
 //#pragma once
 #include "api/trade/public/ThostFtdcMdApi.h"
-#include "createThread/createThread.h"
+#include "createthread/createthread.h"
 #include <unordered_map>
 #include <pthread.h>
 #include <stdio.h>
@@ -15,16 +15,8 @@
 
 using namespace std;
 
-extern int requestId;
-extern pthread_mutex_t MUTEX;
 extern unordered_map<string,pthread_cond_t> PTHREADCONDS;
 
-// struct threadArgument{
-//   pthread_cond_t *cond;
-//   CThostFtdcDepthMarketDataField *pDepthMarketData;
-// };
-
-//extern void *createThreadFun(void *cond);
 class CtpMdSpi : public CThostFtdcMdSpi
 {
 public:
@@ -62,9 +54,6 @@ public:
 	virtual void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData);
 
 public:
-	void ReqUserLogin(TThostFtdcBrokerIDType	appId,
-	        TThostFtdcUserIDType	userId,	TThostFtdcPasswordType	passwd);
-	void SubscribeMarketData(char* instIdList[],int len);
 	bool IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo);
 	//用来设置当前接受的数据，然后供处理数据线程去做处理
 	void setDPMarketDataField(CThostFtdcDepthMarketDataField *pDepthMarketData);
@@ -72,9 +61,8 @@ public:
 	CThostFtdcDepthMarketDataField* getDPMarketDataField(TThostFtdcInstrumentIDType InstrumentID);
 
 private:
-  CThostFtdcMdApi* pUserApi;
-  unordered_map<string,CThostFtdcDepthMarketDataField*> mapPCurrentDepthMarketData;
-  //CThostFtdcDepthMarketDataField *pCurrentDepthMarketData;
+	CThostFtdcMdApi* pUserApi;
+	unordered_map<string,CThostFtdcDepthMarketDataField*> mapPCurrentDepthMarketData;
 };
 
 #endif

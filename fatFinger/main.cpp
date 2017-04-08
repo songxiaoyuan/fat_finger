@@ -1,7 +1,8 @@
 //#include "main.h"
 #include "config.h"
-#include "init/init.h"
-#include "createThread/createThread.h"
+#include "application/application.h"
+//#include "init/init.h"
+//#include "createThread/createThread.h"
 #include <iostream>
 
 using namespace std;
@@ -16,9 +17,11 @@ int main(int argc, const char* argv[]){
   // test_trader();
   //初始化环境，建立md和trader的API和spi
 
+
+/*
   int i;
   initApiAndSpi();
-   cerr<<"-----------------------------------------------"<<endl;
+    cerr<<"-----------------------------------------------"<<endl;
     cerr<<" [1] userLogin        -- 登录"<<endl;
     cerr<<" [2] userSubscribe    -- 用户订阅信息,此时会自动创建处理数据线程"<<endl;
      cerr<<"[3] printOrders      -- 查询现在所有订单的状态"<<endl;
@@ -56,6 +59,11 @@ int main(int argc, const char* argv[]){
             }
     }
   }
+  */
+  application* app = new application();
+  APPLICATION =app;
+  app->Init();
+  app->Run();
 
   return 0;
 }

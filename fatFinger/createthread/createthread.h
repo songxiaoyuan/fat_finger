@@ -1,7 +1,8 @@
-#ifndef CREATETHREAD_H
-#define CREATETHREAD_H
+#ifndef createThread_H
+#define createThread_H
 #include "api/md/mdspi.h"
 #include "api/trader/traderspi.h"
+#include "application/application.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,6 +12,7 @@
 #include <unordered_map>
 
 class CtpMdSpi;
+class application;
 //程序运行时的trader的spi和md的spi。
 extern CtpTraderSpi* PTRADERSPI;
 
@@ -26,6 +28,8 @@ extern double NORMALTHRESHOLD;
 
 //互斥量，用来异步的访问当前传过来的数据。因为可能会存在多个线程同时处理一个指针的时候。
 extern pthread_mutex_t MUTEX;
+
+extern application* APPLICATION;
 
 
 class createThread
@@ -52,4 +56,4 @@ class createThread
         int threadRun();
 };
 
-#endif // CREATETHREAD_H
+#endif // createThread_H

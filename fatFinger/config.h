@@ -4,6 +4,7 @@
 
 #include "api/md/mdspi.h"
 #include "api/trader/traderspi.h"
+#include "application/application.h"
 #include <unordered_map>
 
 //此文件的作用是保存程序运行的一些全局变量，包括登录用户名，密码等信息。
@@ -15,6 +16,8 @@ CtpMdSpi* PMDSPI;
 //保存程序运行时的trader api 和ｍｄ　api
 CThostFtdcTraderApi* PTRADERAPI;
 CThostFtdcMdApi* PMDAPI;
+
+application * APPLICATION;
 
 // 用来保存特定的合约编号对应的条件变量，当有订阅的合约的数据到来时，可以选择的去触发相应的条件变量，从而触发相应的
 // 线程去处理数据。

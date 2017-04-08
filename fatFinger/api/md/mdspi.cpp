@@ -45,32 +45,13 @@ CThostFtdcDepthMarketDataField* CtpMdSpi::getDPMarketDataField(TThostFtdcInstrum
   //return pCurrentDepthMarketData;
 }
 
-void CtpMdSpi::ReqUserLogin(TThostFtdcBrokerIDType	APPID,
-	        TThostFtdcUserIDType	userId,	TThostFtdcPasswordType	passwd)
-{
-	CThostFtdcReqUserLoginField req;
-	memset(&req, 0, sizeof(req));
-	strcpy(req.BrokerID, APPID);
-	strcpy(req.UserID, userId);
-	strcpy(req.Password, passwd);
-	int ret = pUserApi->ReqUserLogin(&req, ++requestId);
-  cerr<<" 请求 | 发送登录..."<<((ret == 0) ? "成功" :"失败") << endl;
-}
-
 void CtpMdSpi::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin,
-		CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
-{
+		CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast){
 	if (!IsErrorRspInfo(pRspInfo) && pRspUserLogin)
 	{
     cerr<<" 响应 | 登录成功...当前交易日:"
       <<pRspUserLogin->TradingDay<<endl;
 	}
-}
-
-void CtpMdSpi::SubscribeMarketData(char *instIdList[],int len)
-{
-  int ret=pUserApi->SubscribeMarketData(instIdList, len);
-  cerr<<" 请求 | 发送行情订阅... "<<((ret == 0) ? "成功" : "失败")<< endl;
 }
 
 void CtpMdSpi::OnRspSubMarketData(
@@ -118,29 +99,6 @@ void CtpMdSpi::OnRtnDepthMarketData(
       }
     }
   }
-
-/*
-   TThostFtdcInstrumentIDType tmp ="au1706";
-  if(strcmp(pDepthMarketData->InstrumentID,tmp)==0){
-     cout<<1<<endl;
-   }
-   else{
-     cout<<2<<endl;
-   }
-   */
- //pthread_mutex_unlock(&MUTEX);
-  /*
-
-  cerr<<" 行情 | 合约:"<<pDepthMarketData->InstrumentID
-    <<" 现价:"<<pDepthMarketData->LastPrice
-    <<" 最高价:" << pDepthMarketData->HighestPrice
-    <<" 最低价:" << pDepthMarketData->LowestPrice
-    <<" 卖一价:" << pDepthMarketData->AskPrice1
-    <<" 卖一量:" << pDepthMarketData->AskVolume1
-    <<" 买一价:" << pDepthMarketData->BidPrice1
-    <<" 买一量:" << pDepthMarketData->BidVolume1
-    <<" 持仓量:"<< pDepthMarketData->OpenInterest <<endl;
-*/
 }
 
 bool CtpMdSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)

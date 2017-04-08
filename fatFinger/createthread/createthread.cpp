@@ -23,13 +23,15 @@ void* createThread::threadFunc(void *arg){
 
 int createThread::threadRun(){
   pthread_t tmp = pthread_self();
-  // cout<<"the thread "<<InstrumentID<<" is called  " <<tmp<<endl;
+  //cout<<"the thread "<<InstrumentID<<" is called  " <<tmp<<endl;
+  //cout<<"the adderss of cond is "<<&cond<<endl;
      while(1){
         //pthread_cond_wait(&cond,&mutex);/*等待*/
         pthread_mutex_lock(&MUTEX);
         pthread_cond_wait((pthread_cond_t*)cond,&MUTEX);/*等待*/
         //线程被唤醒，读取数据，因为已经lock了，所以读的时候可以保证准确性，但是也应该快速的读取。尽快释放lock。
-        CThostFtdcDepthMarketDataField *pCurrentDepthMarketData = PMDSPI->getDPMarketDataField(InstrumentID);
+        CtpMdSpi* pmdspi = APPLICATION->GetMdSpi();
+        CThostFtdcDepthMarketDataField *pCurrentDepthMarketData = pmdspi->getDPMarketDataField(InstrumentID);
         if(pCurrentDepthMarketData ==NULL){
           continue;
         }
@@ -88,7 +90,7 @@ int createThread::threadRun(){
                 }
   			  }
 
-       // cout<<"the thread "<<InstrumentID<<" is called  once "<<tmp<<endl;
+       //cout<<"the thread "<<InstrumentID<<" is called  once "<<tmp<<endl;
     }
 }
 

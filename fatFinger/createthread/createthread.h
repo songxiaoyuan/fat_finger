@@ -13,10 +13,6 @@
 
 class CtpMdSpi;
 class application;
-//程序运行时的trader的spi和md的spi。
-extern CtpTraderSpi* PTRADERSPI;
-
-extern CtpMdSpi* PMDSPI;
 
 // 遇到乌龙指的时候，每一个tick交易量
 extern TThostFtdcVolumeType MAXCOUNT;
@@ -48,7 +44,7 @@ class createThread
         TThostFtdcPriceType AskPrice;
         TThostFtdcPriceType LastPrice;
         TThostFtdcInstrumentIDType InstrumentID;
-        bool FindFatFinger = true;
+        bool FindFatFinger = false;
         pthread_cond_t *cond;
         CThostFtdcDepthMarketDataField *pInitDepthMarketData;
         pthread_t pid;

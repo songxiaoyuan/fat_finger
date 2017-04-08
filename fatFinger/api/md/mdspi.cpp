@@ -69,8 +69,7 @@ void CtpMdSpi::OnRspUnSubMarketData(
 }
 
 void CtpMdSpi::OnRtnDepthMarketData(
-             CThostFtdcDepthMarketDataField *pDepthMarketData)
-{
+             CThostFtdcDepthMarketDataField *pDepthMarketData){
   //将接受到的数据保存在对象里面，方便其他线程以后的读取。
   setDPMarketDataField(pDepthMarketData);
   string InstrumentID = pDepthMarketData->InstrumentID;
@@ -81,7 +80,7 @@ void CtpMdSpi::OnRtnDepthMarketData(
 
     //根据获取到的数据的合约编码，发送信号，去唤醒相应的线程去处理数据。
     pthread_cond_signal(&PTHREADCONDS[InstrumentID]);
-  }
+}
   else{
     //说明处理此合约编码的数据还没有建立，需要建立线程
     PTHREADCONDS[InstrumentID] = PTHREAD_COND_INITIALIZER;

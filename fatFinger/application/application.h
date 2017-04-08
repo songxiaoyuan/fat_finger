@@ -57,8 +57,8 @@ class application
         // 打印当前所有的成交的订单
         void PrintTrades();
 
-        CThostFtdcTraderApi* ReturnTraderApi();
-        CThostFtdcMdApi* ReturnMdApi();
+        //CThostFtdcTraderApi* GetTraderApi();
+        CtpMdSpi* GetMdSpi();
         virtual ~application();
 
     protected:

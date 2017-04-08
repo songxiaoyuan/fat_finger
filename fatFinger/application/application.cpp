@@ -308,12 +308,13 @@ void application::PrintTrades(){
         }
   }
 }
-
+/*
 CThostFtdcTraderApi* application::ReturnTraderApi(){
   return ptraderapi_;
 }
-CThostFtdcMdApi* application::ReturnMdApi(){
-  return pmdapi_;
+*/
+CtpMdSpi* application::GetMdSpi(){
+  return pmdspi_;
 }
 
 application::~application()

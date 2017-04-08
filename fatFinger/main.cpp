@@ -1,21 +1,11 @@
-//#include "main.h"
 #include "config.h"
 #include "application/application.h"
-//#include "init/init.h"
-//#include "createThread/createThread.h"
 #include <iostream>
 
 using namespace std;
 
 int main(int argc, const char* argv[]){
-  //g_hEvent=CreateEvent(NULL, true, false, NULL);
 
-  //if(argc < 2)  cerr<<"格式: 命令 参数, 输入有误."<<endl;
-  //else if(strcmp(argv[1],"--md")==0)    test_md();
-  //else if(strcmp(argv[1],"--order")==0) test_order();
-  //test_md();
-  // test_trader();
-  //初始化环境，建立md和trader的API和spi
 
 
 /*

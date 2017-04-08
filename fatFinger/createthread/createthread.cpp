@@ -48,7 +48,7 @@ int createThread::threadRun(){
   			  	cout<<"the current bid price is "<<CurrentBidPrice<<endl;
   			  	cout<<"the pre bid price is "<<BidPrice<<endl;
   			  	cout<<"----------------"<<InstrumentID<<endl;
-                APPLICATION->ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,CurrentBidPrice,MAXCOUNT);
+                APPLICATION->ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,CurrentBidPrice,MAXCOUNT,THOST_FTDC_OF_Open);
   			  }
   			  else if (CurrentAskPrice <= (AskPrice*(1 - THRESHOLD/100))){
   			    //说明卖一价已经跌停了，所以赶紧开多，就是赶紧买。
@@ -58,7 +58,7 @@ int createThread::threadRun(){
   			  	cout<<"the pre ask price is "<<AskPrice<<endl;
   			  	cout<<"----------------"<<InstrumentID<<endl;
   			  	//说明卖一价跌停，所以赶紧开多,，就是赶紧买
-  			  	APPLICATION->ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,CurrentBidPrice,MAXCOUNT);
+  			  	APPLICATION->ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,CurrentBidPrice,MAXCOUNT,THOST_FTDC_OF_Open);
   			  }
   			  else{
   			      //说明以前还不是乌龙指

@@ -45,9 +45,10 @@ class application
         void ReqQryTradingAccount();
           ///请求查询投资者持仓
        void ReqQryInvestorPosition(TThostFtdcInstrumentIDType instId);
-        ///报单录入请求
+        ///报单录入请求,最后一项开平标志类型,默认的开仓
         void ReqOrderInsert(TThostFtdcInstrumentIDType instId,
-                TThostFtdcDirectionType dir,TThostFtdcPriceType price,   TThostFtdcVolumeType vol);
+                TThostFtdcDirectionType dir,TThostFtdcPriceType price,   TThostFtdcVolumeType vol,
+                TThostFtdcOffsetFlagType type);
         ///报单操作请求,现在主要是撤单
         void ReqOrderAction(TThostFtdcSequenceNoType orderSeq);
         ///判断当前的仓位是不是还需要锁仓，如果需要的话，同时调用锁仓函数。
@@ -57,7 +58,9 @@ class application
         // 打印当前所有的成交的订单
         void PrintTrades();
 
-        //CThostFtdcTraderApi* GetTraderApi();
+        //平掉所有的仓位，方便做实验
+        void CloseALlTrades();
+
         CtpMdSpi* GetMdSpi();
         virtual ~application();
 

@@ -33,7 +33,9 @@ void application::Run(){
     cerr<<" [2] userSubscribe    -- 用户订阅信息,此时会自动创建处理数据线程"<<endl;
      cerr<<"[3] printOrders      -- 查询现在所有订单的状态"<<endl;
      cerr<<"[4] printTrades      -- 查询现在所有成交订单的状态"<<endl;
-    cerr<<" [5]  Exit            -- 退出"<<endl;
+    cerr<<"[５] CloseALlTrades      -- 平掉所有的仓位"<<endl;
+    cerr<<"[６] ReqOrderAction      -- 根据报单编码撤单"<<endl;
+    cerr<<" [７]  Exit            -- 退出"<<endl;
     cerr<<"----------------------------------------------"<<endl;
   while(1){
     cin>>i;
@@ -48,7 +50,7 @@ void application::Run(){
               cout<<"trader用户开始登录"<<endl;
               TraderUserLogin(APPID,USERID,PASSWD);
               cout<<"开始结算单请求并且确认"<<endl;
-              ReqQrySettlementInfo();
+              //ReqQrySettlementInfo();
               ReqSettlementInfoConfirm();
               break;
             }
@@ -63,12 +65,25 @@ void application::Run(){
               PrintOrders();
               break;
             }
-          case 4:{
+      case 4:{
               // 打印现在所有的已经成交的订单。
               PrintTrades();
               break;
             }
     case 5:{
+              // 平掉所有的仓位。
+              CloseALlTrades();
+              break;
+            }
+    case 6:{
+              // 平掉所有的仓位。
+              cout<<"请输入订单编码　"<<endl;
+              TThostFtdcSequenceNoType orderSeq;
+              cin>>orderSeq;
+              ReqOrderAction(orderSeq);
+              break;
+            }
+      case 7:{
               // 程序退出，或者可以做别的操作。
               exit(0);
               break;
@@ -144,7 +159,7 @@ void application::ReqQryInvestorPosition(TThostFtdcInstrumentIDType instId){
 }
 
 void application::ReqOrderInsert(TThostFtdcInstrumentIDType instId,
-                TThostFtdcDirectionType dir,TThostFtdcPriceType price,TThostFtdcVolumeType vol){
+                TThostFtdcDirectionType dir,TThostFtdcPriceType price,TThostFtdcVolumeType vol,TThostFtdcOffsetFlagType type){
     CThostFtdcInputOrderField req;
     memset(&req, 0, sizeof(req));
     strcpy(req.BrokerID, APPID);  //应用单元代码
@@ -162,7 +177,7 @@ void application::ReqOrderInsert(TThostFtdcInstrumentIDType instId,
     }
     req.Direction = MapDirection(dir,true);  //买卖方向
     //req.CombOffsetFlag[0] = MapOffset(kpp[0],true); //组合开平标志:开仓
-    req.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
+    req.CombOffsetFlag[0] = type;
     req.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;   //组合投机套保标志
     req.VolumeTotalOriginal = vol;  ///数量
     req.VolumeCondition = THOST_FTDC_VC_AV; //成交量类型:任何数量
@@ -178,6 +193,26 @@ void application::ReqOrderInsert(TThostFtdcInstrumentIDType instId,
     cerr<<" 请求 | 发送报单..."<<((ret == 0)?"成功":"失败")<< endl;
 }
 
+void application::CloseALlTrades(){
+  unordered_map<string,vector<CThostFtdcTradeField*>> tradeMapVector = ptraderspi_->ReturnAllTrade();
+  unordered_map<string,vector<CThostFtdcTradeField*>>::iterator iter;
+  for(iter = tradeMapVector.begin();iter!=tradeMapVector.end();iter++){
+   vector<CThostFtdcTradeField*> tradeList = iter->second;
+       for(unsigned int i=0; i<tradeList.size(); i++){
+            CThostFtdcTradeField* pTrade = tradeList[i];
+            //调用自己的开仓平仓　函数，最后一项传入的参数是强平。
+            TThostFtdcDirectionType dir;
+            if(pTrade->Direction == THOST_FTDC_D_Buy){
+              dir = THOST_FTDC_D_Sell;
+            }
+            else{
+              dir =THOST_FTDC_D_Buy;
+            }
+            ReqOrderInsert(pTrade->InstrumentID,dir,pTrade->Price,pTrade->Volume,THOST_FTDC_OF_Close);
+        }
+  }
+}
+
 void application::ReqOrderAction(TThostFtdcSequenceNoType orderSeq){
     bool found=false;
     unsigned int i=0;
@@ -190,7 +225,14 @@ void application::ReqOrderAction(TThostFtdcSequenceNoType orderSeq){
           found = true;
           break;
          }
-         if(found){
+      }
+      if(found){
+            CThostFtdcOrderField* tmporder = orderList[i];
+            cout<<tmporder->OrderStatus<<endl;
+            if(tmporder->OrderStatus ==THOST_FTDC_OST_AllTraded || tmporder->OrderStatus ==THOST_FTDC_OST_Canceled){
+              cout<<"请求　｜　报单已经成交或者撤单 "<<endl;
+              return;
+            }
             CThostFtdcInputOrderActionField req;
             memset(&req, 0, sizeof(req));
             strcpy(req.BrokerID, APPID);   //经纪公司代码
@@ -205,7 +247,6 @@ void application::ReqOrderAction(TThostFtdcSequenceNoType orderSeq){
             int ret = ptraderapi_->ReqOrderAction(&req, ++requestid_);
             cerr<< " 请求 | 发送撤单..." <<((ret == 0)?"成功":"失败") << endl;
          }
-      }
     }
     if(!found){cerr<<" 请求 | 报单不存在."<<endl; return;}
 
@@ -250,7 +291,7 @@ bool application::CheckToLock(TThostFtdcInstrumentIDType InstrumentID, TThostFtd
       //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
       cout<<"调用锁仓函数"<<endl;
       TThostFtdcVolumeType num = sell-buy;
-      ReqOrderInsert(InstrumentID,THOST_FTDC_D_Buy,lastPrice,num);
+      ReqOrderInsert(InstrumentID,THOST_FTDC_D_Buy,lastPrice,num,THOST_FTDC_OF_Open);
       return false;
     }
     else{
@@ -258,7 +299,7 @@ bool application::CheckToLock(TThostFtdcInstrumentIDType InstrumentID, TThostFtd
       //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
       cout<<"调用锁仓函数"<<endl;
       TThostFtdcVolumeType num =buy -sell;
-      ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,lastPrice,num);
+      ReqOrderInsert(InstrumentID,THOST_FTDC_D_Sell,lastPrice,num,THOST_FTDC_OF_Open);
       return false;
     }
 }
@@ -308,11 +349,7 @@ void application::PrintTrades(){
         }
   }
 }
-/*
-CThostFtdcTraderApi* application::ReturnTraderApi(){
-  return ptraderapi_;
-}
-*/
+
 CtpMdSpi* application::GetMdSpi(){
   return pmdspi_;
 }

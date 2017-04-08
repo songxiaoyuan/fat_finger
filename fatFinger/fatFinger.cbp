@@ -59,11 +59,9 @@
 		<Unit filename="basicfun/basicfun.cpp" />
 		<Unit filename="basicfun/basicfun.h" />
 		<Unit filename="config.h" />
-		<Unit filename="createThread/createThread.cpp" />
-		<Unit filename="createThread/createThread.h" />
+		<Unit filename="createthread/createthread.cpp" />
+		<Unit filename="createthread/createthread.h" />
 		<Unit filename="error.txt" />
-		<Unit filename="init/init.cpp" />
-		<Unit filename="init/init.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

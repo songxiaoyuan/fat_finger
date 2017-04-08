@@ -2,10 +2,10 @@
 #define CONFIG_H_INCLUDED
 #pragma once
 
+#include <unordered_map>
 #include "api/md/mdspi.h"
 #include "api/trader/traderspi.h"
 #include "application/application.h"
-#include <unordered_map>
 
 //此文件的作用是保存程序运行的一些全局变量，包括登录用户名，密码等信息。
 
@@ -17,32 +17,31 @@ CtpMdSpi* PMDSPI;
 CThostFtdcTraderApi* PTRADERAPI;
 CThostFtdcMdApi* PMDAPI;
 
-application * APPLICATION;
+application* APPLICATION;
 
 // 用来保存特定的合约编号对应的条件变量，当有订阅的合约的数据到来时，可以选择的去触发相应的条件变量，从而触发相应的
 // 线程去处理数据。
-unordered_map<string,pthread_cond_t> PTHREADCONDS;
+unordered_map<string, pthread_cond_t> PTHREADCONDS;
 
 // 判断对应的合约编码是不是已经下单了
 // 其中对应的值如果是'0'，表示还没有下单或者已经锁仓，此时不用处理。
 // 如果对应的是'1',表示已经遇到买一价涨停情况，已经开空了。
 // 如果对应的是'2',表示已经遇到卖一价跌停的情况，已经开多了。
-unordered_map<string,char> TRADERSTATUS;
+unordered_map<string, char> TRADERSTATUS;
 
 //请求编号
-int requestId=0;
+int requestId = 0;
 
 // 遇到乌龙指的时候，每一个tick交易量
 TThostFtdcVolumeType MAXCOUNT = 1;
 
 // 判断是不是乌龙指的阈值
-double THRESHOLD=10;
+double THRESHOLD = 10;
 // 判断是不是回归正常的阈值
-double NORMALTHRESHOLD=0;
-
+double NORMALTHRESHOLD = 0;
 
 // 前置地址 7*24
-char MDFRONT[]   ="tcp://180.168.146.187:10031";
+char MDFRONT[] = "tcp://180.168.146.187:10031";
 char TRADEFRONT[]="tcp://180.168.146.187:10030";
 
 //char MDFRONT[]   ="tcp://180.168.146.187:10010";

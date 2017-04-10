@@ -20,7 +20,7 @@ extern unordered_map<string,pthread_cond_t> PTHREADCONDS;
 class CtpMdSpi : public CThostFtdcMdSpi
 {
 public:
-  CtpMdSpi(CThostFtdcMdApi* api):pUserApi(api){};
+  CtpMdSpi(){};
 	///´íÎóÓ¦´ð
 	virtual void OnRspError(CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast);

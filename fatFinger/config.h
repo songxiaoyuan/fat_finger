@@ -41,11 +41,11 @@ double THRESHOLD = 10;
 double NORMALTHRESHOLD = 0;
 
 // 前置地址 7*24
-char MDFRONT[] = "tcp://180.168.146.187:10031";
-char TRADEFRONT[]="tcp://180.168.146.187:10030";
+//char MDFRONT[] = "tcp://180.168.146.187:10031";
+//char TRADEFRONT[]="tcp://180.168.146.187:10030";
 
-//char MDFRONT[]   ="tcp://180.168.146.187:10010";
-//char TRADEFRONT[]="tcp://180.168.146.187:10000";
+char MDFRONT[]   ="tcp://180.168.146.187:10010";
+char TRADEFRONT[]="tcp://180.168.146.187:10000";
 
 //所采用的账号和密码
 TThostFtdcBrokerIDType   APPID= "9999";

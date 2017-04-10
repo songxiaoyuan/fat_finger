@@ -7,7 +7,7 @@ application::application() {
 void application::Init() {
   //初始化traderApi
   CThostFtdcTraderApi* pTraderApi = CThostFtdcTraderApi::CreateFtdcTraderApi();
-  CtpTraderSpi* pTraderSpi = new CtpTraderSpi(pTraderApi);
+  CtpTraderSpi* pTraderSpi = new CtpTraderSpi();
   pTraderApi->RegisterSpi((CThostFtdcTraderSpi*)pTraderSpi);  // 注册事件类
   pTraderApi->SubscribePublicTopic(THOST_TERT_RESTART);       // 注册公有流
   pTraderApi->SubscribePrivateTopic(THOST_TERT_RESTART);      // 注册私有流
@@ -18,7 +18,7 @@ void application::Init() {
 
   //初始化MDApi
   CThostFtdcMdApi* pMdApi = CThostFtdcMdApi::CreateFtdcMdApi();
-  CtpMdSpi* pMdSpi = new CtpMdSpi(pMdApi);  //创建回调处理类对象MdSpi
+  CtpMdSpi* pMdSpi = new CtpMdSpi();  //创建回调处理类对象MdSpi
   pMdApi->RegisterSpi(pMdSpi);              // 回调对象注入接口类
   pMdApi->RegisterFront(MDFRONT);           // 注册行情前置地址
   pMdApi->Init();                           //接口线程启动, 开始工作

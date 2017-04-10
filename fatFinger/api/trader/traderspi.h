@@ -69,7 +69,6 @@ public:
 
 
 private:
-  CThostFtdcTraderApi* pUserApi;
   // 会话参数
   int  frontId; //前置编号
   int  sessionId; //会话编号

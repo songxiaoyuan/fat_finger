@@ -69,7 +69,7 @@ void CtpMdSpi::OnRtnDepthMarketData(
   setDPMarketDataField(pDepthMarketData);
   string InstrumentID = pDepthMarketData->InstrumentID;
 
-  cout << InstrumentID << endl;
+  //cout << InstrumentID << endl;
 
   if (PTHREADCONDS.find(InstrumentID) != PTHREADCONDS.end()) {
     //根据获取到的数据的合约编码，发送信号，去唤醒相应的线程去处理数据。

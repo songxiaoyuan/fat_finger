@@ -61,7 +61,6 @@ public:
 	CThostFtdcDepthMarketDataField* getDPMarketDataField(TThostFtdcInstrumentIDType InstrumentID);
 
 private:
-	CThostFtdcMdApi* pUserApi;
 	unordered_map<string,CThostFtdcDepthMarketDataField*> mapPCurrentDepthMarketData;
 };
 

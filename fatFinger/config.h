@@ -9,13 +9,6 @@
 
 //此文件的作用是保存程序运行的一些全局变量，包括登录用户名，密码等信息。
 
-// 保存程序运行时的trader的spi和md的spi。
-CtpTraderSpi* PTRADERSPI;
-CtpMdSpi* PMDSPI;
-
-//保存程序运行时的trader api 和ｍｄ　api
-CThostFtdcTraderApi* PTRADERAPI;
-CThostFtdcMdApi* PMDAPI;
 
 application* APPLICATION;
 
@@ -23,14 +16,6 @@ application* APPLICATION;
 // 线程去处理数据。
 unordered_map<string, pthread_cond_t> PTHREADCONDS;
 
-// 判断对应的合约编码是不是已经下单了
-// 其中对应的值如果是'0'，表示还没有下单或者已经锁仓，此时不用处理。
-// 如果对应的是'1',表示已经遇到买一价涨停情况，已经开空了。
-// 如果对应的是'2',表示已经遇到卖一价跌停的情况，已经开多了。
-unordered_map<string, char> TRADERSTATUS;
-
-//请求编号
-int requestId = 0;
 
 // 遇到乌龙指的时候，每一个tick交易量
 TThostFtdcVolumeType MAXCOUNT = 1;

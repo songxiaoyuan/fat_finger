@@ -57,7 +57,6 @@ class application {
   void PrintOrders();
   // 打印当前所有的成交的订单
   void PrintTrades();
-
   //平掉所有的仓位，方便做实验
   void CloseALlTrades();
 

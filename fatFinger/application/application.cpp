@@ -19,9 +19,9 @@ void application::Init() {
   //初始化MDApi
   CThostFtdcMdApi* pMdApi = CThostFtdcMdApi::CreateFtdcMdApi();
   CtpMdSpi* pMdSpi = new CtpMdSpi();  //创建回调处理类对象MdSpi
-  pMdApi->RegisterSpi(pMdSpi);              // 回调对象注入接口类
-  pMdApi->RegisterFront(MDFRONT);           // 注册行情前置地址
-  pMdApi->Init();                           //接口线程启动, 开始工作
+  pMdApi->RegisterSpi(pMdSpi);        // 回调对象注入接口类
+  pMdApi->RegisterFront(MDFRONT);     // 注册行情前置地址
+  pMdApi->Init();                     //接口线程启动, 开始工作
   pmdspi_ = pMdSpi;
   pmdapi_ = pMdApi;
 }
@@ -29,14 +29,14 @@ void application::Init() {
 void application::Run() {
   int i;
   cerr << "-----------------------------------------------" << endl;
-  cerr << " [1] userLogin        --  Md和Trader登录" << endl;
-  cerr << " [2] userSubscribe    -- 用户订阅信息,此时会自动创建处理数据线程"
+  cerr << "[1] userLogin        --  Md和Trader登录" << endl;
+  cerr << "[2] userSubscribe    -- 用户订阅信息,此时会自动创建处理数据线程"
        << endl;
   cerr << "[3] printOrders      -- 查询现在所有订单的状态" << endl;
   cerr << "[4] printTrades      -- 查询现在所有成交订单的状态" << endl;
-  cerr << "[５] CloseALlTrades      -- 平掉所有的仓位" << endl;
-  cerr << "[６] ReqOrderAction      -- 根据报单编码撤单" << endl;
-  cerr << " [７]  Exit            -- 退出" << endl;
+  cerr << "[5] CloseALlTrades   -- 平掉所有的仓位" << endl;
+  cerr << "[5] ReqOrderAction   -- 根据报单编码撤单" << endl;
+  cerr << "[7] Exit             -- 退出" << endl;
   cerr << "----------------------------------------------" << endl;
   while (1) {
     cin >> i;
@@ -51,7 +51,7 @@ void application::Run() {
         cout << "trader用户开始登录" << endl;
         TraderUserLogin(APPID, USERID, PASSWD);
         cout << "开始结算单请求并且确认" << endl;
-        // ReqQrySettlementInfo();
+        ReqQrySettlementInfo();
         ReqSettlementInfoConfirm();
         break;
       }
@@ -285,37 +285,40 @@ bool application::CheckToLock(TThostFtdcInstrumentIDType InstrumentID,
       sell = sell + tradeVector[i]->Volume;
     }
   }
-  //检查已经下单的合约的买卖数量，这里的报单的只是算没有成交的，和没有撤单的。
-  for (int i = 0; i < orderVector.size(); i++) {
-    CThostFtdcOrderField* tmp = orderVector[i];
-    if (tmp->OrderStatus != THOST_FTDC_OST_AllTraded &&
-        tmp->OrderStatus != THOST_FTDC_OST_Canceled) {
-      if (tmp->Direction == THOST_FTDC_D_Buy) {
-        buy = buy + tmp->VolumeTotalOriginal;
-      } else if (tmp->Direction == THOST_FTDC_D_Sell) {
-        sell = sell + tmp->VolumeTotalOriginal;
+  if (sell == buy) {
+    //表示成交的已经锁仓了，已经不需要锁仓了。
+    return true;
+  } else {
+    //检查已经下单的合约的买卖数量，这里的报单的只是算没有成交的，和没有撤单的。
+    //因为已经出现成交单子不一样的情况，所以要先看看是不是存在已经下单但是没成交的，如果存在，就不用在锁仓了，如果不存在，就还是需要。
+    for (int i = 0; i < orderVector.size(); i++) {
+      CThostFtdcOrderField* tmp = orderVector[i];
+      if (tmp->OrderStatus != THOST_FTDC_OST_AllTraded &&
+          tmp->OrderStatus != THOST_FTDC_OST_Canceled) {
+        if (tmp->Direction == THOST_FTDC_D_Buy) {
+          buy = buy + tmp->VolumeTotalOriginal;
+        } else if (tmp->Direction == THOST_FTDC_D_Sell) {
+          sell = sell + tmp->VolumeTotalOriginal;
+        }
       }
     }
-  }
-  if (sell == buy) {
-    //表示已经锁仓了，已经不需要锁仓了。
-    return true;
-  } else if (sell > buy) {
-    //表示卖的比买的多，所以还是需要锁仓的，需要在买差值。
-    //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
-    cout << "调用锁仓函数" << endl;
-    TThostFtdcVolumeType num = sell - buy;
-    ReqOrderInsert(InstrumentID, THOST_FTDC_D_Buy, lastPrice, num,
-                   THOST_FTDC_OF_Open);
-    return false;
-  } else {
-    //表示买的比卖的多，所以还是需要锁仓的，需要卖差值。
-    //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
-    cout << "调用锁仓函数" << endl;
-    TThostFtdcVolumeType num = buy - sell;
-    ReqOrderInsert(InstrumentID, THOST_FTDC_D_Sell, lastPrice, num,
-                   THOST_FTDC_OF_Open);
-    return false;
+    if (sell > buy) {
+      //表示卖的比买的多，所以还是需要锁仓的，需要在买差值。
+      //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
+      cout << "调用锁仓函数" << endl;
+      TThostFtdcVolumeType num = sell - buy;
+      ReqOrderInsert(InstrumentID, THOST_FTDC_D_Buy, lastPrice, num,
+                     THOST_FTDC_OF_Open);
+      return false;
+    } else {
+      //表示买的比卖的多，所以还是需要锁仓的，需要卖差值。
+      //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
+      cout << "调用锁仓函数" << endl;
+      TThostFtdcVolumeType num = buy - sell;
+      ReqOrderInsert(InstrumentID, THOST_FTDC_D_Sell, lastPrice, num,
+                     THOST_FTDC_OF_Open);
+      return false;
+    }
   }
 }
 

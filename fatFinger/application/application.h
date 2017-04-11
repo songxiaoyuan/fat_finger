@@ -5,6 +5,7 @@
 #include "api/trader/traderspi.h"
 
 #include <iostream>
+
 //用户登录需要的前置地址
 extern char MDFRONT[];
 extern char TRADEFRONT[];
@@ -49,7 +50,7 @@ class application {
                       TThostFtdcDirectionType dir, TThostFtdcPriceType price,
                       TThostFtdcVolumeType vol, TThostFtdcOffsetFlagType type);
   ///报单操作请求,现在主要是撤单
-  void ReqOrderAction(TThostFtdcSequenceNoType orderSeq);
+  void AppReqOrderAction(TThostFtdcSequenceNoType orderSeq);
   ///判断当前的仓位是不是还需要锁仓，如果需要的话，同时调用锁仓函数。
   bool CheckToLock(TThostFtdcInstrumentIDType InstrumentID,
                    TThostFtdcPriceType lastPrice);

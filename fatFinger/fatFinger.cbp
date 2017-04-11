@@ -46,6 +46,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="CHyUpDown.cpp" />
 		<Unit filename="api/md/mdspi.cpp" />
 		<Unit filename="api/md/mdspi.h" />
 		<Unit filename="api/trade/public/ThostFtdcMdApi.h" />

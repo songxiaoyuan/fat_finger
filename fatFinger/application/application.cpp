@@ -81,7 +81,7 @@ void application::Run() {
         cout << "请输入订单编码　" << endl;
         TThostFtdcSequenceNoType orderSeq;
         cin >> orderSeq;
-        ReqOrderAction(orderSeq);
+        AppReqOrderAction(orderSeq);
         break;
       }
       case 7: {
@@ -210,18 +210,20 @@ void application::CloseALlTrades() {
       CThostFtdcTradeField* pTrade = tradeList[i];
       //调用自己的开仓平仓　函数，最后一项传入的参数是强平。
       TThostFtdcDirectionType dir;
-      if (pTrade->Direction == THOST_FTDC_D_Buy) {
-        dir = THOST_FTDC_D_Sell;
-      } else {
-        dir = THOST_FTDC_D_Buy;
+      if (pTrade->OffsetFlag == THOST_FTDC_OF_Open) {
+        if (pTrade->Direction == THOST_FTDC_D_Buy) {
+          dir = THOST_FTDC_D_Sell;
+        } else {
+          dir = THOST_FTDC_D_Buy;
+        }
+        ReqOrderInsert(pTrade->InstrumentID, dir, pTrade->Price, pTrade->Volume,
+                       THOST_FTDC_OF_Close);
       }
-      ReqOrderInsert(pTrade->InstrumentID, dir, pTrade->Price, pTrade->Volume,
-                     THOST_FTDC_OF_Close);
     }
   }
 }
 
-void application::ReqOrderAction(TThostFtdcSequenceNoType orderSeq) {
+void application::AppReqOrderAction(TThostFtdcSequenceNoType orderSeq) {
   bool found = false;
   unsigned int i = 0;
   unordered_map<string, vector<CThostFtdcOrderField*>> orderMapVector =
@@ -236,8 +238,8 @@ void application::ReqOrderAction(TThostFtdcSequenceNoType orderSeq) {
       }
     }
     if (found) {
+      found = false;
       CThostFtdcOrderField* tmporder = orderList[i];
-      cout << tmporder->OrderStatus << endl;
       if (tmporder->OrderStatus == THOST_FTDC_OST_AllTraded ||
           tmporder->OrderStatus == THOST_FTDC_OST_Canceled) {
         cout << "请求　｜　报单已经成交或者撤单 " << endl;
@@ -253,9 +255,9 @@ void application::ReqOrderAction(TThostFtdcSequenceNoType orderSeq) {
       strcpy(req.ExchangeID, orderList[i]->ExchangeID);
       strcpy(req.OrderSysID, orderList[i]->OrderSysID);
       req.ActionFlag = THOST_FTDC_AF_Delete;  //操作标志
-
       int ret = ptraderapi_->ReqOrderAction(&req, ++requestid_);
       cerr << " 请求 | 发送撤单..." << ((ret == 0) ? "成功" : "失败") << endl;
+      return;
     }
   }
   if (!found) {
@@ -305,15 +307,15 @@ bool application::CheckToLock(TThostFtdcInstrumentIDType InstrumentID,
     if (sell > buy) {
       //表示卖的比买的多，所以还是需要锁仓的，需要在买差值。
       //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
-      cout << "调用锁仓函数" << endl;
+      cout << "调用锁仓函数 sell is bigger than buy" << endl;
       TThostFtdcVolumeType num = sell - buy;
       ReqOrderInsert(InstrumentID, THOST_FTDC_D_Buy, lastPrice, num,
                      THOST_FTDC_OF_Open);
       return false;
-    } else {
+    } else if (sell < buy) {
       //表示买的比卖的多，所以还是需要锁仓的，需要卖差值。
       //锁仓采用的方法是按照市价，立即成交，否则撤单的方式
-      cout << "调用锁仓函数" << endl;
+      cout << "调用锁仓函数 buy is bigerr than sell" << endl;
       TThostFtdcVolumeType num = buy - sell;
       ReqOrderInsert(InstrumentID, THOST_FTDC_D_Sell, lastPrice, num,
                      THOST_FTDC_OF_Open);

@@ -1,13 +1,13 @@
 # depslib dependency file v1.0
-1491639567 source:/home/sxy/Desktop/fat_finger/fatFinger/main.cpp
+1491874128 source:/home/sxy/Desktop/fat_finger/fatFinger/main.cpp
 	<iostream>
 	"application/application.h"
 	"config.h"
 
-1491785749 source:/home/sxy/Desktop/fat_finger/fatFinger/api/md/mdspi.cpp
+1491874170 source:/home/sxy/Desktop/fat_finger/fatFinger/api/md/mdspi.cpp
 	"mdspi.h"
 
-1491792134 /home/sxy/Desktop/fat_finger/fatFinger/api/md/mdspi.h
+1491833980 /home/sxy/Desktop/fat_finger/fatFinger/api/md/mdspi.h
 	"api/trade/public/ThostFtdcMdApi.h"
 	"createthread/createthread.h"
 	<unordered_map>
@@ -26,14 +26,14 @@
 1465180016 /home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/ThostFtdcUserApiStruct.h
 	"ThostFtdcUserApiDataType.h"
 
-1465180016 /home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/ThostFtdcUserApiDataType.h
+1491875417 /home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/ThostFtdcUserApiDataType.h
 
 1490840139 source:/home/sxy/Desktop/fat_finger/fatFinger/api/test/test.cpp
 	"test.h"
 
 1490840139 /home/sxy/Desktop/fat_finger/fatFinger/api/test/test.h
 
-1491639681 source:/home/sxy/Desktop/fat_finger/fatFinger/api/trader/traderspi.cpp
+1491881181 source:/home/sxy/Desktop/fat_finger/fatFinger/api/trader/traderspi.cpp
 	"api/trader/traderspi.h"
 
 1465180016 /home/sxy/Desktop/fat_finger/fatFinger/api/trade/public/ThostFtdcTraderApi.h
@@ -62,7 +62,7 @@
 	<iostream>
 	<stdlib.h>
 
-1491786286 /home/sxy/Desktop/fat_finger/fatFinger/config.h
+1491882177 /home/sxy/Desktop/fat_finger/fatFinger/config.h
 	<unordered_map>
 	"api/md/mdspi.h"
 	"api/trader/traderspi.h"
@@ -104,7 +104,7 @@
 	"api/trader/traderspi.h"
 	<iostream>
 
-1491639550 /home/sxy/Desktop/fat_finger/fatFinger/createthread/createthread.h
+1491882129 /home/sxy/Desktop/fat_finger/fatFinger/createthread/createthread.h
 	<pthread.h>
 	<stdio.h>
 	<stdlib.h>
@@ -127,10 +127,10 @@
 	<unistd.h>
 	<iostream>
 
-1491639997 source:/home/sxy/Desktop/fat_finger/fatFinger/application/application.cpp
+1491885545 source:/home/sxy/Desktop/fat_finger/fatFinger/application/application.cpp
 	"application.h"
 
-1491786471 /home/sxy/Desktop/fat_finger/fatFinger/application/application.h
+1491882623 /home/sxy/Desktop/fat_finger/fatFinger/application/application.h
 	"api/md/mdspi.h"
 	"api/trader/traderspi.h"
 	<iostream>
@@ -138,6 +138,13 @@
 1491639573 source:/home/sxy/Desktop/fat_finger/fatFinger/basicfun/basicfun.cpp
 	"basicfun.h"
 
-1491633343 source:/home/sxy/Desktop/fat_finger/fatFinger/createthread/createthread.cpp
+1491874920 source:/home/sxy/Desktop/fat_finger/fatFinger/createthread/createthread.cpp
 	"createthread.h"
+
+1491835055 /home/sxy/Desktop/fat_finger/fatFinger/CHyUpDown.h
+	"stdio.h"
+	<iostream>
+
+1491835902 source:/home/sxy/Desktop/fat_finger/fatFinger/CHyUpDown.cpp
+	"CHyUpDown.h"
 

@@ -32,14 +32,20 @@ double NORMALTHRESHOLD = 0;
 char MDFRONT[]   ="tcp://180.168.146.187:10010";
 char TRADEFRONT[]="tcp://180.168.146.187:10000";
 
+/*
 //所采用的账号和密码
+TThostFtdcBrokerIDType   APPID= "9999";
+TThostFtdcUserIDType	 USERID = "088961";
+TThostFtdcPasswordType   PASSWD = "111111";
+*/
+
 TThostFtdcBrokerIDType   APPID= "9999";
 TThostFtdcUserIDType	 USERID = "068674";
 TThostFtdcPasswordType   PASSWD = "19930208";
 
 //订阅的行情列表
-char *PPINSTRUMENTID[] = {"au1706","au1712"};
-int NUMOFINSTRUMENTID = 2;
+char *PPINSTRUMENTID[] = {"au1712"};
+int NUMOFINSTRUMENTID = 1;
 
 //互斥量，用来异步的访问当前传过来的数据。因为可能会存在多个线程同时处理一个指针的时候。
 pthread_mutex_t MUTEX = PTHREAD_MUTEX_INITIALIZER;

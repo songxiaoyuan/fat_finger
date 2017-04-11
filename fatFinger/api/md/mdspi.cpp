@@ -1,6 +1,6 @@
 #include "mdspi.h"
-
 using namespace std;
+
 
 void CtpMdSpi::OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID,
                           bool bIsLast) {
@@ -92,6 +92,7 @@ void CtpMdSpi::OnRtnDepthMarketData(
       }
     }
   }
+
 }
 
 bool CtpMdSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)

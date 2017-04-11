@@ -110,6 +110,12 @@ void CtpTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder) {
   memcpy(order, pOrder, sizeof(CThostFtdcOrderField));
   bool founded = false;
   string instrumentID = order->InstrumentID;
+  pthread_t tmp = pthread_self();
+ TThostFtdcErrorMsgType error ="0";
+      strcpy(error,pOrder->StatusMsg);
+    cerr << " 回报 | 报单已提交...序号:" << order->BrokerOrderSeq
+       << " the thread is " << tmp << endl;
+   cerr<<" 回报 | 报单的状态是...序号:"<<ConvertGb18030ToUtf8(error)<<endl;
   if (orderMapVector.find(instrumentID) != orderMapVector.end()) {
     //说明此前有相应的合约编码的报单
     for (unsigned int i = 0; i < orderMapVector[instrumentID].size(); i++) {
@@ -129,11 +135,7 @@ void CtpTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder) {
     //第一次发现此合约编码类型的合约
     orderMapVector[instrumentID].push_back(order);
   }
-  pthread_t tmp = pthread_self();
-  cerr << " 回报 | 报单已提交...序号:" << order->BrokerOrderSeq
-       << " the thread is " << tmp << endl;
-  // cerr<<" 回报 | 报单的状态是...序号:"<<order->StatusMsg<< " the thread is
-  // "<<tmp<<endl;
+
   // basicPrint(order->StatusMsg);
 }
 

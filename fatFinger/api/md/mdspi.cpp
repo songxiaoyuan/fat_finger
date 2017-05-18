@@ -66,11 +66,19 @@ void CtpMdSpi::OnRspUnSubMarketData(
 void CtpMdSpi::OnRtnDepthMarketData(
     CThostFtdcDepthMarketDataField *pDepthMarketData) {
   //将接受到的数据保存在对象里面，方便其他线程以后的读取。
-  setDPMarketDataField(pDepthMarketData);
+  //setDPMarketDataField(pDepthMarketData);
+  cout<<"start!!!!!!!!!!!!!!!!!!!"<<endl;
   string InstrumentID = pDepthMarketData->InstrumentID;
 
-  //cout << InstrumentID << endl;
-
+  cout << InstrumentID << endl;
+  cout << pDepthMarketData->TradingDay << endl;
+  cout << pDepthMarketData->LastPrice << endl;
+  cout << pDepthMarketData->Volume << endl;
+  cout << pDepthMarketData->BidPrice1 << endl;
+  cout << pDepthMarketData->AskPrice1 << endl;
+  //cout << pDepthMarketData->TradingDay << endl;
+  //cout << pDepthMarketData->TradingDay << endl;
+/*
   if (PTHREADCONDS.find(InstrumentID) != PTHREADCONDS.end()) {
     //根据获取到的数据的合约编码，发送信号，去唤醒相应的线程去处理数据。
     pthread_cond_signal(&PTHREADCONDS[InstrumentID]);
@@ -92,7 +100,7 @@ void CtpMdSpi::OnRtnDepthMarketData(
       }
     }
   }
-
+*/
 }
 
 bool CtpMdSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)

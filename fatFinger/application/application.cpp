@@ -48,8 +48,8 @@ void application::Run() {
         MdUserLogin(APPID, USERID, PASSWD);
 
         // Trader用户开始登录，并且进行结算单确认。
-        cout << "trader用户开始登录" << endl;
-        TraderUserLogin(APPID, USERID, PASSWD);
+        //cout << "trader用户开始登录" << endl;
+        //TraderUserLogin(APPID, USERID, PASSWD);
         cout << "开始结算单请求并且确认" << endl;
         ReqQrySettlementInfo();
         ReqSettlementInfoConfirm();

@@ -67,6 +67,7 @@ void CtpMdSpi::OnRtnDepthMarketData(
     CThostFtdcDepthMarketDataField *pDepthMarketData) {
   //将接受到的数据保存在对象里面，方便其他线程以后的读取。
   //setDPMarketDataField(pDepthMarketData);
+  /*
   cout<<"start!!!!!!!!!!!!!!!!!!!"<<endl;
   string InstrumentID = pDepthMarketData->InstrumentID;
 
@@ -78,6 +79,7 @@ void CtpMdSpi::OnRtnDepthMarketData(
   cout << pDepthMarketData->AskPrice1 << endl;
   //cout << pDepthMarketData->TradingDay << endl;
   //cout << pDepthMarketData->TradingDay << endl;
+  ×／
 /*
   if (PTHREADCONDS.find(InstrumentID) != PTHREADCONDS.end()) {
     //根据获取到的数据的合约编码，发送信号，去唤醒相应的线程去处理数据。

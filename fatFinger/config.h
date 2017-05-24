@@ -29,11 +29,11 @@ double NORMALTHRESHOLD = 0;
 //char MDFRONT[] = "tcp://180.168.146.187:10031";
 //char TRADEFRONT[]="tcp://180.168.146.187:10030";
 
-//char MDFRONT[]   ="tcp://180.168.146.187:10010";
-//char TRADEFRONT[]="tcp://180.168.146.187:10000";
+char MDFRONT[]   ="tcp://180.168.146.187:10010";
+char TRADEFRONT[]="tcp://180.168.146.187:10000";
 
-char MDFRONT[]   ="tcp://180.169.112.50:41213";
-char TRADEFRONT[]="tcp://180.169.112.50:41205";
+//char MDFRONT[]   ="tcp://180.169.112.50:41213";
+//char TRADEFRONT[]="tcp://180.169.112.50:41205";
 
 
 //所采用的账号和密码
@@ -48,7 +48,7 @@ TThostFtdcUserIDType	 USERID = "068674";
 TThostFtdcPasswordType   PASSWD = "19930208";
 */
 //订阅的行情列表
-char *PPINSTRUMENTID[] = {"SR709C6700"};
+char *PPINSTRUMENTID[] = {"cu1707"};
 int NUMOFINSTRUMENTID = 1;
 
 //互斥量，用来异步的访问当前传过来的数据。因为可能会存在多个线程同时处理一个指针的时候。

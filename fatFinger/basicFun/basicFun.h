@@ -9,6 +9,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fstream>
 #include <iconv.h>
 using namespace std;
 

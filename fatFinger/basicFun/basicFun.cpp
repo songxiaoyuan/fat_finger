@@ -2,7 +2,7 @@
 
 void basicPrint(string error){
     //cout<<"this basicPrint is called"<<endl;
-    char *filePath = "error.txt";
+    char *filePath = "error_trader.txt";
     FILE* file_fd = fopen(filePath,"a");
     //error = "test";
     char *huiche = "\n";
